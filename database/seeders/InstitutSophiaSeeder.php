@@ -24,6 +24,7 @@ class InstitutSophiaSeeder extends Seeder
         User::firstOrCreate(['email' => 'admin@sophia.com'], [
             'name' => 'Admin Directeur',
             'password' => bcrypt('password'),
+            'role' => 'director',
         ]);
 
         User::firstOrCreate(['email' => 'secretaire@sophia.com'], [
