@@ -37,6 +37,18 @@ Route::get('/approve-registration/{request}', function (Request $request, Regist
     return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
 })->name('registration.approve');
 
+Route::get('/test-mail', function () {
+    try {
+        Illuminate\Support\Facades\Mail::raw('Ceci est un test de connexion SMTP.', function ($message) {
+            $message->to('votre-email@gmail.com') // Changez ceci pour votre email de test
+                    ->subject('Sophia - Test de connexion');
+        });
+        return "Email envoyé avec succès !";
+    } catch (\Exception $e) {
+        return "Erreur lors de l'envoi : " . $e->getMessage() . "\n\n" . $e->getTraceAsString();
+    }
+});
+
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
