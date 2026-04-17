@@ -21,7 +21,7 @@ class InstitutSophiaSeeder extends Seeder
     public function run(): void
     {
         // Create Default Users
-        User::firstOrCreate(['email' => 'admin@sophia.com'], [
+        User::firstOrCreate(['email' => 'timotheeklaus@gmail.com'], [
             'name' => 'Admin Directeur',
             'password' => bcrypt('password'),
             'role' => 'director',
