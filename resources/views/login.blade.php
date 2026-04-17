@@ -174,6 +174,9 @@
             </form>
             
             <div class="mt-12 pt-8 border-t border-slate-200">
+                <p class="text-center text-xs font-medium text-slate-500 mb-4">
+                    Pas encore de compte ? <a href="{{ route('register-secretary') }}" class="text-[#1e3a8a] font-bold hover:underline">Demande d'accès secrétaire</a>
+                </p>
                 <p class="text-center text-xs font-medium text-slate-500">
                     Problème de connexion ? <a href="#" class="text-[#1e3a8a] font-bold hover:underline">Contactez le support IT</a>
                 </p>

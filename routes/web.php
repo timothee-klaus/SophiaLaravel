@@ -3,6 +3,37 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Livewire\SecretaryRegistration;
+use App\Models\RegistrationRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/register-secretary', SecretaryRegistration::class)->name('register-secretary');
+
+Route::get('/approve-registration/{request}', function (Request $request, RegistrationRequest $registrationRequest) {
+    if (! $request->hasValidSignature()) {
+        abort(403, 'Lien d\'approbation invalide ou expiré.');
+    }
+
+    if ($registrationRequest->status === 'approved') {
+        return "Cette demande a déjà été approuvée.";
+    }
+
+    // Create User
+    User::create([
+        'name' => $registrationRequest->name,
+        'email' => $registrationRequest->email,
+        'password' => Hash::make('password'), // Mot de passe par défaut pour le test
+        'role' => 'secretary',
+    ]);
+
+    $registrationRequest->update([
+        'status' => 'approved',
+        'approved_at' => now(),
+    ]);
+
+    return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
+})->name('registration.approve');
 
 Route::get('/', function () {
     if (Auth::check()) {
