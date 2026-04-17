@@ -49,6 +49,31 @@ Route::get('/test-mail', function () {
     }
 });
 
+Route::get('/debug-smtp', function () {
+    $hosts = [
+        ['host' => 'smtp.gmail.com', 'port' => 465],
+        ['host' => 'smtp.gmail.com', 'port' => 587],
+        ['host' => 'smtp.mailtrap.io', 'port' => 2525],
+        ['host' => 'smtp.mailrelay.com', 'port' => 587],
+    ];
+    
+    $results = [];
+    foreach ($hosts as $server) {
+        $start = microtime(true);
+        $fp = @fsockopen($server['host'], $server['port'], $errno, $errstr, 5);
+        $end = microtime(true);
+        $results[] = [
+            'server' => $server['host'] . ':' . $server['port'],
+            'success' => $fp !== false,
+            'time' => round(($end - $start) * 1000, 2) . 'ms',
+            'error' => $errstr ?: 'N/A'
+        ];
+        if ($fp) fclose($fp);
+    }
+    
+    return response()->json($results);
+});
+
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
