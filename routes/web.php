@@ -37,43 +37,6 @@ Route::get('/approve-registration/{request}', function (Request $request, Regist
     return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
 })->name('registration.approve');
 
-Route::get('/test-mail', function () {
-    try {
-        Illuminate\Support\Facades\Mail::raw('Ceci est un test de connexion SMTP.', function ($message) {
-            $message->to('votre-email@gmail.com') // Changez ceci pour votre email de test
-                    ->subject('Sophia - Test de connexion');
-        });
-        return "Email envoyé avec succès !";
-    } catch (\Exception $e) {
-        return "Erreur lors de l'envoi : " . $e->getMessage() . "\n\n" . $e->getTraceAsString();
-    }
-});
-
-Route::get('/debug-smtp', function () {
-    $hosts = [
-        ['host' => 'smtp.gmail.com', 'port' => 465],
-        ['host' => 'smtp.gmail.com', 'port' => 587],
-        ['host' => 'smtp.mailtrap.io', 'port' => 2525],
-        ['host' => 'smtp.mailrelay.com', 'port' => 587],
-    ];
-    
-    $results = [];
-    foreach ($hosts as $server) {
-        $start = microtime(true);
-        $fp = @fsockopen($server['host'], $server['port'], $errno, $errstr, 5);
-        $end = microtime(true);
-        $results[] = [
-            'server' => $server['host'] . ':' . $server['port'],
-            'success' => $fp !== false,
-            'time' => round(($end - $start) * 1000, 2) . 'ms',
-            'error' => $errstr ?: 'N/A'
-        ];
-        if ($fp) fclose($fp);
-    }
-    
-    return response()->json($results);
-});
-
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
