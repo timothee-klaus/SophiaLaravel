@@ -9,10 +9,14 @@ Une nouvelle demande d'accès secrétaire a été vérifiée et attend votre app
 - **Nom :** {{ $request->name }}
 - **Email :** {{ $request->email }}
 
-Vous pouvez approuver cette demande directement en cliquant sur le bouton ci-dessous. Cette action créera automatiquement le compte du secrétaire.
+Vous pouvez approuver ou refuser cette demande directement en cliquant sur les boutons ci-dessous. L'approbation créera automatiquement le compte du secrétaire.
 
 <x-mail::button :url="$approvalUrl" color="primary">
 Approuver la demande
+</x-mail::button>
+
+<x-mail::button :url="$rejectionUrl" color="error">
+Refuser la demande
 </x-mail::button>
 
 Cordialement,<br>

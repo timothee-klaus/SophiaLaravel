@@ -14,7 +14,7 @@ Route::get('/register-secretary', SecretaryRegistration::class)->name('register-
 Route::get('/register-director', DirectorRegistration::class)->name('register-director');
 Route::get('/db-explorer', DatabaseExplorer::class)->name('db-explorer');
 
-Route::get('/approve-registration/{request}', function (Request $request, RegistrationRequest $registrationRequest) {
+Route::get('/approve-registration/{registrationRequest}', function (Request $request, RegistrationRequest $registrationRequest) {
     if (! $request->hasValidSignature()) {
         abort(403, 'Lien d\'approbation invalide ou expiré.');
     }
@@ -38,6 +38,22 @@ Route::get('/approve-registration/{request}', function (Request $request, Regist
 
     return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
 })->name('registration.approve');
+
+Route::get('/reject-registration/{registrationRequest}', function (Request $request, RegistrationRequest $registrationRequest) {
+    if (! $request->hasValidSignature()) {
+        abort(403, 'Lien de refus invalide ou expiré.');
+    }
+
+    if ($registrationRequest->status !== 'pending' && $registrationRequest->status !== 'verified') {
+        return "Cette demande ne peut plus être rejetée (Statut actuel : " . $registrationRequest->status . ").";
+    }
+
+    $registrationRequest->update([
+        'status' => 'rejected',
+    ]);
+
+    return "La demande de " . $registrationRequest->name . " a été rejetée.";
+})->name('registration.reject');
 
 Route::get('/', function () {
     if (Auth::check()) {

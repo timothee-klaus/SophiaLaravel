@@ -20,7 +20,8 @@ class AdminRegistrationNotification extends Mailable
      */
     public function __construct(
         public RegistrationRequest $request,
-        public string $approvalUrl
+        public string $approvalUrl,
+        public string $rejectionUrl
     ) {}
 
     /**

@@ -67,9 +67,10 @@ class SecretaryRegistration extends Component
             $director = \App\Models\User::where('role', 'director')->first();
             $adminEmail = $director ? $director->email : 'timotheeklaus@gmail.com';
             
-            $approvalUrl = URL::signedRoute('registration.approve', ['request' => $request->id]);
+            $approvalUrl = URL::signedRoute('registration.approve', ['registrationRequest' => $request->id]);
+            $rejectionUrl = URL::signedRoute('registration.reject', ['registrationRequest' => $request->id]);
             
-            Mail::to($adminEmail)->send(new AdminRegistrationNotification($request, $approvalUrl));
+            Mail::to($adminEmail)->send(new AdminRegistrationNotification($request, $approvalUrl, $rejectionUrl));
 
             $this->step = 3;
         } else {
