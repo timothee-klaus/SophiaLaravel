@@ -13,6 +13,7 @@ class ExamEligibilityManager extends Component
 {
     public $activeYearId;
     public $levels;
+    public $selectedCycle = ''; 
     public $selectedLevelId = '';
     public $enrollments = [];
 
@@ -25,10 +26,16 @@ class ExamEligibilityManager extends Component
         $activeYear = AcademicYear::where('is_current', true)->first();
         if ($activeYear) {
             $this->activeYearId = $activeYear->id;
-            $this->levels = Level::where('is_exam_class', true)->get();
+            $this->levels = Level::all();
         } else {
             $this->levels = collect();
         }
+    }
+
+    public function updatedSelectedCycle()
+    {
+        $this->selectedLevelId = '';
+        $this->loadEnrollments();
     }
 
     public function updatedSelectedLevelId()
@@ -38,12 +45,25 @@ class ExamEligibilityManager extends Component
 
     public function loadEnrollments()
     {
-        if ($this->selectedLevelId && $this->activeYearId) {
-            $this->enrollments = Enrollment::with(['student'])
-                ->where('academic_year_id', $this->activeYearId)
-                ->where('level_id', $this->selectedLevelId)
-                ->get()
+        if ($this->activeYearId) {
+            $query = Enrollment::with(['student', 'level'])
+                ->where('academic_year_id', $this->activeYearId);
+
+            if ($this->selectedLevelId) {
+                $query->where('level_id', $this->selectedLevelId);
+            } elseif ($this->selectedCycle) {
+                $query->whereHas('level', function ($q) {
+                    $q->where('cycle', $this->selectedCycle);
+                });
+            } else {
+                // Si rien n'est sélectionné, on ne charge rien pour éviter de surcharger
+                $this->enrollments = [];
+                return;
+            }
+
+            $this->enrollments = $query->get()
                 ->map(function ($enrollment) {
+                    // Pour le suivi des retards, "eligible" signifie "à jour"
                     $enrollment->is_eligible = $enrollment->isEligibleForExams();
                     return $enrollment;
                 });

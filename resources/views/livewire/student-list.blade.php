@@ -68,8 +68,8 @@
                     @endphp
                     <tr wire:key="student-{{ $student->id }}" class="hover:bg-slate-50/80 transition-colors duration-150 ease-in-out group">
                         <td class="px-6 py-4 font-mono text-sm font-semibold text-slate-500">{{ $student->matricule }}</td>
-                        <td class="px-6 py-4 max-w-[220px]">
-                            <div class="font-bold text-slate-800 truncate" title="{{ mb_strtoupper($student->last_name) }} {{ $student->first_name }}">
+                        <td class="px-6 py-4">
+                            <div class="font-bold text-slate-800">
                                 {{ mb_strtoupper($student->last_name) }} {{ $student->first_name }}
                             </div>
                             <div class="text-xs text-slate-400 mt-0.5">{{ \Carbon\Carbon::parse($student->birth_date)->format('d/m/Y') }}</div>

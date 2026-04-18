@@ -2,13 +2,23 @@
     <div class="p-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-xl border border-slate-200/60 relative overflow-hidden">
         <div class="absolute -top-[10%] -left-[10%] w-[30%] h-[50%] rounded-full bg-blue-500/10 blur-[100px] pointer-events-none"></div>
     <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4 relative z-10 w-full">
-        <h3 class="text-lg font-bold text-slate-800">Filtres de recherche</h3>
+        <h3 class="text-lg font-bold text-slate-800">Suivi des Retards de Paiement</h3>
 
         <div class="flex items-center gap-4">
-            <select wire:model.live="selectedLevelId" class="px-4 py-2 border rounded-md">
-                <option value="">Sélectionnez une classe d'examen</option>
+            <select wire:model.live="selectedCycle" class="px-4 py-2 border rounded-md">
+                <option value="">Tous les cycles</option>
+                <option value="preschool">Préscolaire</option>
+                <option value="primary">Primaire</option>
+                <option value="college">Collège</option>
+                <option value="lycee">Lycée</option>
+            </select>
+
+            <select wire:model.live="selectedLevelId" class="px-4 py-2 border rounded-md min-w-[200px]">
+                <option value="">Sélectionnez une classe</option>
                 @foreach($levels as $level)
-                    <option value="{{ $level->id }}">{{ $level->name }} ({{ strtoupper($level->cycle) }})</option>
+                    @if(empty($selectedCycle) || $level->cycle === $selectedCycle)
+                        <option value="{{ $level->id }}">{{ $level->name }} ({{ strtoupper($level->cycle) }})</option>
+                    @endif
                 @endforeach
             </select>
 
@@ -16,7 +26,7 @@
                     @if(empty($selectedLevelId)) disabled @endif
                     class="px-4 py-2 bg-[#1e3a8a] text-white rounded-md font-medium hover:bg-blue-800 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Imprimer Liste d'émargement
+                Liste d'émargement
             </button>
         </div>
     </div>
@@ -35,7 +45,7 @@
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Matricule</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nom & Prénom</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Sexe</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut Examen</th>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut Paiement</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                 </tr>
             </thead>
@@ -43,18 +53,18 @@
                 @forelse($enrollments as $enrollment)
                     <tr class="hover:bg-slate-50/80 transition-colors duration-150 group">
                         <td class="px-6 py-4 font-bold text-slate-800">{{ $enrollment->student->matricule }}</td>
-                        <td class="px-6 py-4 {{ !$enrollment->is_eligible ? 'text-rose-500 line-through' : 'font-bold text-slate-700' }}">
+                        <td class="px-6 py-4 font-bold text-slate-700">
                             {{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}
                         </td>
                         <td class="px-6 py-4 text-sm text-center text-slate-600">{{ $enrollment->student->gender }}</td>
                         <td class="px-6 py-4 text-center">
                             @if($enrollment->is_eligible)
-                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-lg">Autorisé</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-lg">À jour</span>
                                 @if($enrollment->is_manually_unblocked)
                                     <p class="text-[10px] italic text-slate-400 mt-1">Déblocage: {{ $enrollment->manual_exam_unblock_reason }}</p>
                                 @endif
                             @else
-                                <span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-lg">Paiement requis</span>
+                                <span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-lg">Impayé / En retard</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
