@@ -43,10 +43,14 @@ class StudentEnrollment extends Component
         $this->academic_year_id = $active ? $active->id : null;
     }
 
+    public function updatedAcademicYearId($value)
+    {
+        $this->refreshLevels();
+    }
+
     public function updatedCycle($value)
     {
-        $this->availableLevels = \App\Models\Level::where('cycle', $value)->get();
-        $this->level_id = null;
+        $this->refreshLevels();
         // Mise à jour de la Checklist
         if (in_array($value, ['preschool', 'primary'])) {
             $this->documents = [
@@ -67,6 +71,17 @@ class StudentEnrollment extends Component
         } else {
             $this->documents = [];
         }
+    }
+
+    private function refreshLevels()
+    {
+        if ($this->cycle) {
+            $this->availableLevels = \App\Models\Level::where('cycle', $this->cycle)->get();
+        } else {
+            $this->availableLevels = [];
+        }
+        $this->level_id = null;
+        $this->registrationFee = 0;
     }
 
     public function updatedLevelId($value)

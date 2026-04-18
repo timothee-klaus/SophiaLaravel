@@ -54,6 +54,9 @@ class Payment extends Model
             if (!$payment->uuid) {
                 $payment->uuid = (string) \Illuminate\Support\Str::uuid();
             }
+            if (!$payment->transaction_id) {
+                $payment->transaction_id = 'RCPT-' . date('YmdHis') . '-' . strtoupper(\Illuminate\Support\Str::random(4));
+            }
         });
     }
 }

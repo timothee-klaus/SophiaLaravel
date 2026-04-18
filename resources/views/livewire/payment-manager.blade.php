@@ -96,7 +96,7 @@
                     <form wire:submit.prevent="savePayment" class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Type de Paiement</label>
-                            <select wire:model.live="type" wire:change="type === 'miscellaneous' ? setAmountForMiscellaneous() : null" class="mt-1 block w-full border border-gray-300 bg-white px-3 py-2 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <select wire:model.live="type" class="mt-1 block w-full border border-gray-300 bg-white px-3 py-2 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                 <option value="tuition">Scolarité</option>
                                 <option value="miscellaneous">Frais Divers</option>
                                 <option value="registration">Frais d'Inscription</option>
@@ -105,7 +105,7 @@
                         @if($type === 'tuition')
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Tranche à payer</label>
-                                <select wire:model="installment_number" class="mt-1 block w-full border border-gray-300 bg-white px-3 py-2 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                <select wire:model.live="installment_number" class="mt-1 block w-full border border-gray-300 bg-white px-3 py-2 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                                     <option value="">Sélectionnez la tranche</option>
                                     @foreach($installments as $ins)
                                         @php

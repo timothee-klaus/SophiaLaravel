@@ -49,8 +49,10 @@
                 @forelse($payments as $payment)
                     <tr class="hover:bg-slate-50/80 transition-colors duration-150 ease-in-out group">
                         <td class="px-6 py-4 font-mono text-xs font-semibold text-slate-500">{{ $payment->transaction_id }}</td>
-                        <td class="px-6 py-4">
-                            <div class="font-bold text-slate-800">{{ mb_strtoupper($payment->student->last_name) }} {{ $payment->student->first_name }}</div>
+                        <td class="px-6 py-4 max-w-[200px]">
+                            <div class="font-bold text-slate-800 truncate" title="{{ mb_strtoupper($payment->student->last_name) }} {{ $payment->student->first_name }}">
+                                {{ mb_strtoupper($payment->student->last_name) }} {{ $payment->student->first_name }}
+                            </div>
                             <div class="text-xs text-slate-400 mt-0.5">{{ $payment->student->matricule }}</div>
                         </td>
                         <td class="px-6 py-4">

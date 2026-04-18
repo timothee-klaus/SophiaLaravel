@@ -56,7 +56,9 @@
                 @forelse($enrollments as $enrollment)
                     <tr wire:key="enrollment-{{ $enrollment->id }}" class="hover:bg-slate-50/80 transition-colors duration-150 ease-in-out group">
                         <td class="px-6 py-4 font-mono text-sm text-slate-500 group-hover:text-blue-600 transition-colors">{{ $enrollment->student->matricule }}</td>
-                        <td class="px-6 py-4 font-bold text-slate-800">{{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}</td>
+                        <td class="px-6 py-4 font-bold text-slate-800 max-w-[250px] truncate" title="{{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}">
+                            {{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}
+                        </td>
                         <td class="px-6 py-4 text-sm font-medium text-slate-600">{{ $enrollment->level->name }}</td>
                         <td class="px-6 py-4">
                             @if($enrollment->status == 'active')

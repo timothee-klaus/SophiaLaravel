@@ -88,7 +88,7 @@
                 <!-- NEW: Academic Year selector -->
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-slate-700 mb-1.5">Année Académique</label>
-                    <select wire:model="academic_year_id" class="block w-full md:w-1/2 border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm font-medium transition-all">
+                    <select wire:model.live="academic_year_id" class="block w-full md:w-1/2 border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm font-medium transition-all">
                         <option value="">Sélectionnez l'année de rattachement</option>
                         @foreach($academicYears as $year)
                             <option value="{{ $year->id }}">{{ $year->name }} {{ $year->is_current ? '(En cours)' : '' }}</option>
@@ -100,7 +100,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Cycle Scolaire</label>
-                        <select wire:model.change="cycle" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all">
+                        <select wire:model.live="cycle" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all">
                             <option value="">Sélectionnez un cycle</option>
                             <option value="preschool">Préscolaire</option>
                             <option value="primary">Primaire</option>

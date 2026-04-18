@@ -286,8 +286,8 @@ class LevelManager extends Component
         $fee = TuitionFee::findOrFail($this->managingTuitionFeeId);
         $totalInstallments = array_sum(array_column($this->tempInstallments, 'amount'));
 
-        if ($totalInstallments > $fee->total_amount + 0.01) {
-            session()->flash('modal_error', 'La somme des tranches (' . number_format($totalInstallments, 0, ',', ' ') . ') ne peut pas dépasser le montant total de la scolarité (' . number_format($fee->total_amount, 0, ',', ' ') . ').');
+        if (abs($totalInstallments - $fee->total_amount) > 0.01) {
+            session()->flash('modal_error', 'La somme des tranches (' . number_format($totalInstallments, 0, ',', ' ') . ') doit être strictement égale au montant total de la scolarité (' . number_format($fee->total_amount, 0, ',', ' ') . ').');
             return;
         }
 

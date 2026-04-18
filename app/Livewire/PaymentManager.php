@@ -64,20 +64,36 @@ class PaymentManager extends Component
                 ->orderBy('created_at', 'desc')->get();
         }
     }
-    public function setAmountForMiscellaneous()
+    public function updatedType($value)
     {
-        $this->type = 'miscellaneous';
+        if ($value === 'miscellaneous') {
+            if ($this->enrollment && $this->enrollment->level) {
+                $levelName = strtolower($this->enrollment->level->name);
+                $cycle = $this->enrollment->level->cycle;
+                $isExamClass = $this->enrollment->level->is_exam_class;
+                if (str_contains($levelName, 'cm2')) {
+                    $this->amount = 2000;
+                } elseif (in_array($cycle, ['college', 'lycee']) && $isExamClass) {
+                    $this->amount = 3000;
+                } else {
+                    $this->amount = 1000;
+                }
+            }
+        } else {
+            $this->amount = '';
+        }
         $this->installment_number = '';
-        if ($this->enrollment && $this->enrollment->level) {
-            $levelName = strtolower($this->enrollment->level->name);
-            $cycle = $this->enrollment->level->cycle;
-            $isExamClass = $this->enrollment->level->is_exam_class;
-            if (str_contains($levelName, 'cm2')) {
-                $this->amount = 2000;
-            } elseif (in_array($cycle, ['college', 'lycee']) && $isExamClass) {
-                $this->amount = 3000;
-            } else {
-                $this->amount = 1000;
+    }
+
+    public function updatedInstallmentNumber($value)
+    {
+        if ($this->type === 'tuition' && $value) {
+            $ins = $this->installments->where('installment_number', $value)->first();
+            if ($ins) {
+                $paid = $this->payments->where('type', 'tuition')
+                    ->where('installment_number', $value)
+                    ->sum('amount');
+                $this->amount = $ins->amount - $paid;
             }
         }
     }
