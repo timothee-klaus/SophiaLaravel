@@ -65,7 +65,7 @@ class SecretaryRegistration extends Component
 
             // Notify Admin
             $director = \App\Models\User::where('role', 'director')->first();
-            $adminEmail = $director ? $director->email : 'admin@sophia.com';
+            $adminEmail = $director ? $director->email : 'timotheeklaus@gmail.com';
             
             $approvalUrl = URL::signedRoute('registration.approve', ['request' => $request->id]);
             
