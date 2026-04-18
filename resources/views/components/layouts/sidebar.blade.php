@@ -40,8 +40,8 @@
         </a>
 
         <!-- Années Académiques -->
-        <a href="{{ route('academic-years.manager') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('academic-years.manager') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('academic-years.manager') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <a href="{{ route('academic-years') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('academic-years') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('academic-years') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
             Années Académiques

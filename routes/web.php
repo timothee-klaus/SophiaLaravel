@@ -102,7 +102,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/academic-years', function () {
         return view('academic-years');
-    })->name('academic-years.manager');
+    })->name('academic-years');
 
     Route::get('/settings', function () {
         return view('settings');
