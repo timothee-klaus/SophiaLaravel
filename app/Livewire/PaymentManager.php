@@ -136,7 +136,6 @@ class PaymentManager extends Component
                 $this->amount,
                 $this->installment_number ?: null
             );
-            // Generate PDF Receipt
             // Generate PDF Receipt using our professional template
             $pdf = Pdf::loadView('exports.receipt-pdf', [
                 'payment' => $payment
@@ -145,18 +144,17 @@ class PaymentManager extends Component
             $filename = 'Reçu_' . $payment->transaction_id . '.pdf';
             $path = 'receipts/' . $payment->transaction_id . '.pdf';
             
-            // Store it just in case, but we prefer on-the-fly generation
             Storage::disk('public')->put($path, $pdf->output());
             $payment->update(['receipt_path' => $path]);
             
-            $this->lastReceiptUrl = $payment->uuid; // Using UUID for secure link resolution
+            $this->lastReceiptUrl = $payment->uuid; 
             $this->paymentSuccess = true;
             $this->type = 'tuition';
             $this->amount = '';
             $this->installment_number = '';
             $this->loadStudentData();
             $this->dispatch('paymentCreated');
-            session()->flash('message', 'Paiement enregistré avec succès.');
+            
         } catch (Exception $e) {
             session()->flash('error', $e->getMessage());
         }
@@ -175,37 +173,15 @@ class PaymentManager extends Component
     }
     public function render()
     {
-        $examBlocked = false;
-        if ($this->enrollment && $this->installments) {
-            $levelName = strtolower($this->enrollment->level->name);
-            $cycle = strtolower($this->enrollment->level->cycle);
-            $isExamClass = in_array($cycle, ['college', 'lycee']) && $this->enrollment->level->is_exam_class;
-            if ($isExamClass || str_contains($levelName, 'cm2') || str_contains($levelName, '3ème') || str_contains($levelName, '1ère') || str_contains($levelName, 'tle')) {
-                // If the current date is after December 31st (month >= 1)
-                // Actually to make it check strictly, if now() is Jan to Dec, the "31st December" refers to the first year of the academic year.
-                // We enforce the check if the date is passed.
-                $decemberDeadline = false;
-                $activeYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::first();
-                if ($activeYear) {
-                    $years = explode('-', $activeYear->name);
-                    $start_year = count($years) > 1 ? trim($years[0]) : now()->year;
-                    $deadline = \Carbon\Carbon::parse("$start_year-12-31")->endOfDay();
-                    if (now()->greaterThan($deadline)) {
-                        $decemberDeadline = true;
-                    }
-                }
-
-                if ($decemberDeadline) {
-                    $requiredForExam = $this->installments->whereIn('installment_number', [1, 2])->sum('amount') ?? 0;
-                    $paidForExam = $this->payments->where('type', 'tuition')->whereIn('installment_number', [1, 2])->sum('amount') ?? 0;
-                    if ($paidForExam < $requiredForExam) {
-                        $examBlocked = true;
-                    }
-                }
-            }
+        $activeYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::first();
+        $isNewStudent = false;
+        if ($this->enrollment && $activeYear) {
+            $isNewStudent = $this->enrollment->student->isNew($activeYear->id);
         }
+
         return view('livewire.payment-manager', [
-            'examBlocked' => $examBlocked
+            'examBlocked' => $this->enrollment ? !$this->enrollment->isEligibleForExams() : false,
+            'isNewStudent' => $isNewStudent
         ]);
     }
 }

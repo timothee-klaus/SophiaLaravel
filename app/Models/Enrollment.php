@@ -54,10 +54,12 @@ class Enrollment extends Model
         $startYearStr = explode('-', $academicYear->name)[0];
         $deadline = \Carbon\Carbon::parse("$startYearStr-12-31")->endOfDay();
 
+        // Before deadline, everyone in exam class is eligible (pending payment)
         if (now()->lessThanOrEqualTo($deadline)) {
             return true;
         }
 
+        // After December 31st, check for the first TWO installments
         $tuitionFee = TuitionFee::where('level_id', $this->level_id)
             ->where('academic_year_id', $this->academic_year_id)
             ->first();
@@ -66,14 +68,21 @@ class Enrollment extends Model
             return false;
         }
 
-        $installmentsCount = $tuitionFee->installments()->count();
+        $installments = $tuitionFee->installments()
+            ->orderBy('installment_number')
+            ->take(2)
+            ->get();
         
-        if ($installmentsCount > 0) {
-            $requiredAmount = $tuitionFee->installments()
-                ->where('due_date', '<', now())
-                ->sum('amount');
+        if ($installments->count() >= 2) {
+            // Must have paid at least the sum of the first two installments
+            $requiredAmount = $installments->sum('amount');
+        } elseif ($installments->count() == 1) {
+            // Only one installment defined? Assume it's the 1st one, but we need "two" as per rule.
+            // If only one exists, maybe it's 100%. We take it as the requirement.
+            $requiredAmount = $installments->first()->amount;
         } else {
-            $requiredAmount = $tuitionFee->total_amount * 0.75; // Default: 75% required by exam time if no tranches configured
+            // No tranches? Fallback to a percentage (e.g. 50% for the first two "halves")
+            $requiredAmount = $tuitionFee->total_amount * 0.50;
         }
 
         $tuitionPaid = (float) Payment::where('student_id', $this->student_id)

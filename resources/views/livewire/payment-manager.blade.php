@@ -27,24 +27,44 @@
     </div>
     @if($studentId && $enrollment)
         <div class="p-6">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h3 class="text-2xl font-bold text-gray-800">{{ $enrollment->student->first_name }} {{ $enrollment->student->last_name }}</h3>
-                    <p class="text-gray-500">Matricule: {{ $enrollment->student->matricule }} &middot; Classe: {{ $enrollment->level->name }}</p>
-                </div>
+            </div>
+            <!-- Alerts & Context -->
+            <div class="mb-6 space-y-3">
+                @if($isNewStudent)
+                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3 animate-pulse">
+                        <div class="p-2 bg-amber-500 text-white rounded-lg shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-black text-amber-800 uppercase tracking-wider">Nouvel Élève Détecté</p>
+                            <p class="text-[10px] font-bold text-amber-600">RAPPEL : Les frais divers sont payables intégralement à l'inscription.</p>
+                        </div>
+                    </div>
+                @endif
+
                 @if($examBlocked)
-                    <span class="px-4 py-2 bg-red-100 text-red-800 font-bold uppercase rounded-lg border border-red-200 flex items-center gap-2">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        BLOQUÉ EXAMEN
-                    </span>
+                    <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-rose-500 text-white rounded-lg animate-bounce">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-[11px] font-black text-rose-800 uppercase tracking-wider">Scolarité Insuffisante : BLOQUÉ EXAMEN</p>
+                                <p class="text-[10px] font-bold text-rose-600">Le seuil des 2 tranches après décembre n'est pas atteint.</p>
+                            </div>
+                        </div>
+                        @if($enrollment->is_manually_unblocked)
+                            <span class="text-[9px] font-black bg-white/50 text-rose-500 px-2 py-1 rounded border border-rose-100 uppercase">Dérogation Active</span>
+                        @endif
+                    </div>
                 @endif
             </div>
-            <!-- Session Messages -->
-            @if (session()->has('message'))
-                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg">{{ session('message') }}</div>
-            @endif
+
             @if (session()->has('error'))
-                <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">{{ session('error') }}</div>
+                <div class="p-4 mb-4 text-xs font-bold text-red-700 bg-red-100 border border-red-200 rounded-xl flex items-center gap-2">
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    {{ session('error') }}
+                </div>
             @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Echéancier -->

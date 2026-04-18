@@ -55,16 +55,34 @@ class ExamEligibilityManager extends Component
                 $query->whereHas('level', function ($q) {
                     $q->where('cycle', $this->selectedCycle);
                 });
-            } else {
-                // Si rien n'est sélectionné, on ne charge rien pour éviter de surcharger
-                $this->enrollments = [];
-                return;
             }
 
             $this->enrollments = $query->get()
                 ->map(function ($enrollment) {
-                    // Pour le suivi des retards, "eligible" signifie "à jour"
+                    // "is_eligible" = used for "BLOQUÉ" (Exam classes only)
                     $enrollment->is_eligible = $enrollment->isEligibleForExams();
+                    
+                    // "is_up_to_date" = used for "EN RETARD" (All classes)
+                    // Up to date means paid at least what was due by "now"
+                    $tuitionFee = TuitionFee::where('level_id', $enrollment->level_id)
+                        ->where('academic_year_id', $enrollment->academic_year_id)
+                        ->first();
+                        
+                    if ($tuitionFee) {
+                        $requiredNow = $tuitionFee->installments()
+                            ->where('due_date', '<=', now())
+                            ->sum('amount');
+                        
+                        $paid = Payment::where('student_id', $enrollment->student_id)
+                            ->where('academic_year_id', $enrollment->academic_year_id)
+                            ->where('type', 'tuition')
+                            ->sum('amount');
+                            
+                        $enrollment->is_up_to_date = $paid >= $requiredNow;
+                    } else {
+                        $enrollment->is_up_to_date = true;
+                    }
+
                     return $enrollment;
                 });
         } else {

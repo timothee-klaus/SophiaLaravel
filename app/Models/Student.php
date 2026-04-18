@@ -34,4 +34,15 @@ class Student extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    /**
+     * Determine if the student is new to the institution.
+     * A student is considered new if they have no enrollments in previous academic years.
+     */
+    public function isNew(int $currentYearId): bool
+    {
+        return ! $this->enrollments()
+            ->where('academic_year_id', '<', $currentYearId)
+            ->exists();
+    }
 }

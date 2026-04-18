@@ -37,65 +37,72 @@
         </div>
     @endif
 
-    @if($selectedLevelId)
+    @if(count($enrollments) > 0)
     <div class="overflow-x-auto rounded-xl border border-slate-200/60 shadow-sm bg-white relative z-10 mt-6">
         <table class="min-w-full text-left whitespace-nowrap">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Matricule</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nom & Prénom</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Sexe</th>
+                    @if(!$selectedLevelId)
+                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Classe</th>
+                    @endif
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Statut Paiement</th>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Conséquence</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-                @forelse($enrollments as $enrollment)
+                @foreach($enrollments as $enrollment)
                     <tr class="hover:bg-slate-50/80 transition-colors duration-150 group">
-                        <td class="px-6 py-4 font-bold text-slate-800">{{ $enrollment->student->matricule }}</td>
-                        <td class="px-6 py-4 font-bold text-slate-700">
-                            {{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}
+                        <td class="px-6 py-4 font-bold text-slate-800 tracking-tighter text-xs">{{ $enrollment->student->matricule }}</td>
+                        <td class="px-6 py-4">
+                            <div class="font-black text-slate-700 uppercase tracking-tight text-xs leading-tight">
+                                {{ mb_strtoupper($enrollment->student->last_name) }}<br>
+                                <span class="text-slate-500 font-bold capitalize">{{ $enrollment->student->first_name }}</span>
+                            </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-center text-slate-600">{{ $enrollment->student->gender }}</td>
+                        @if(!$selectedLevelId)
+                            <td class="px-6 py-4 text-[10px] font-black text-[#1e3a8a] uppercase">{{ $enrollment->level->name }}</td>
+                        @endif
                         <td class="px-6 py-4 text-center">
-                            @if($enrollment->is_eligible)
-                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-lg">À jour</span>
-                                @if($enrollment->is_manually_unblocked)
-                                    <p class="text-[10px] italic text-slate-400 mt-1">Déblocage: {{ $enrollment->manual_exam_unblock_reason }}</p>
-                                @endif
+                            @if($enrollment->is_up_to_date)
+                                <span class="bg-emerald-50 text-emerald-600 text-[10px] font-black px-2 py-1 rounded-md border border-emerald-100 uppercase tracking-wider">À Jour</span>
                             @else
-                                <span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-lg">Impayé / En retard</span>
+                                <span class="bg-amber-50 text-amber-600 text-[10px] font-black px-2 py-1 rounded-md border border-amber-100 uppercase tracking-wider">En Retard</span>
                             @endif
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if(!$enrollment->is_eligible)
-                                <button wire:click="openUnblockModal({{ $enrollment->id }})" class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors">Levée de blocage</button>
+                                <span class="bg-rose-50 text-rose-600 text-[10px] font-black px-2 py-1 rounded-md border border-rose-100 uppercase tracking-wider shadow-sm">BLOQUÉ EXAMEN</span>
+                                @if($enrollment->is_manually_unblocked)
+                                    <p class="text-[9px] italic text-slate-400 mt-1">Dérogation : {{ $enrollment->manual_exam_unblock_reason }}</p>
+                                @endif
                             @else
-                                <span class="text-slate-300 text-xs">-</span>
+                                <span class="text-slate-300 text-[10px] font-bold">—</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if(!$enrollment->is_eligible)
+                                <button wire:click="openUnblockModal({{ $enrollment->id }})" class="p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all shadow-sm border border-blue-100">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                                </button>
+                            @else
+                                <span class="text-slate-300 text-xs font-bold">RAS</span>
                             @endif
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
-                            <div class="flex flex-col items-center justify-center space-y-4 opacity-70">
-                                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
-                                    <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                                </div>
-                                <div class="max-w-sm">
-                                    <h4 class="text-lg font-bold text-slate-700 tracking-tight">Liste vide</h4>
-                                    <p class="text-sm font-medium text-slate-500 mt-1">Aucun élève trouvé dans cette classe pour ces critères.</p>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
     @else
-        <div class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-            Sélectionnez une classe pour afficher la liste des élèves.
+        <div class="text-center py-20 bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200 mt-8">
+            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </div>
+            <h4 class="text-slate-600 font-bold">Chargement de la liste globale...</h4>
+            <p class="text-slate-400 text-xs mt-1">Utilisez les filtres pour affiner par cycle ou par classe.</p>
         </div>
     @endif
 </div>
