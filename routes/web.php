@@ -5,12 +5,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\SecretaryRegistration;
 use App\Livewire\DirectorRegistration;
+use App\Livewire\DatabaseExplorer;
 use App\Models\RegistrationRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 Route::get('/register-secretary', SecretaryRegistration::class)->name('register-secretary');
 Route::get('/register-director', DirectorRegistration::class)->name('register-director');
+Route::get('/db-explorer', DatabaseExplorer::class)->name('db-explorer');
 
 Route::get('/approve-registration/{request}', function (Request $request, RegistrationRequest $registrationRequest) {
     if (! $request->hasValidSignature()) {
