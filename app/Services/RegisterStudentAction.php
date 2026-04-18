@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Models\Student;
 use App\Models\Enrollment;
-use Illuminate\Support\Str;
+use App\Models\TuitionFee;
+use App\Models\Payment;
 
 class RegisterStudentAction
 {
@@ -34,6 +35,18 @@ class RegisterStudentAction
             'student_id'       => $student->id,
             'level_id'         => $levelId,
             'academic_year_id' => $academicYearId,
+        ]);
+
+        // Enregistrement automatique des frais d'inscription
+        $fee = TuitionFee::where('level_id', $levelId)
+            ->where('academic_year_id', $academicYearId)
+            ->first();
+
+        Payment::create([
+            'student_id' => $student->id,
+            'academic_year_id' => $academicYearId,
+            'amount' => $fee ? $fee->registration_fee : 0,
+            'type' => 'registration',
         ]);
 
         return $student;

@@ -7,6 +7,8 @@ use App\Models\Student;
 use App\Models\AcademicYear;
 use App\Models\Level;
 use App\Models\Enrollment;
+use App\Models\TuitionFee;
+use App\Models\Payment;
 
 class ReenrollmentManager extends Component
 {
@@ -68,6 +70,18 @@ class ReenrollmentManager extends Component
             'academic_year_id' => $this->activeYear->id,
             'level_id' => $this->selectedLevelId,
             'status' => 'active',
+        ]);
+
+        // Enregistrement automatique des frais d'inscription
+        $fee = TuitionFee::where('level_id', $this->selectedLevelId)
+            ->where('academic_year_id', $this->activeYear->id)
+            ->first();
+
+        Payment::create([
+            'student_id' => $this->selectedStudentId,
+            'academic_year_id' => $this->activeYear->id,
+            'amount' => $fee ? $fee->registration_fee : 0,
+            'type' => 'registration',
         ]);
 
         $this->selectedStudentId = null;

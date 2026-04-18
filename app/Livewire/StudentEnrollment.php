@@ -67,11 +67,18 @@ class StudentEnrollment extends Component
         } else {
             $this->documents = [];
         }
-        // Calculs des frais initiaux
-        if ($value === 'primary' || $value === 'preschool') $this->registrationFee = 3000;
-        elseif ($value === 'college') $this->registrationFee = 5000;
-        elseif ($value === 'lycee') $this->registrationFee = 10000;
-        else $this->registrationFee = 0;
+    }
+
+    public function updatedLevelId($value)
+    {
+        if ($value && $this->academic_year_id) {
+            $fee = \App\Models\TuitionFee::where('level_id', $value)
+                ->where('academic_year_id', $this->academic_year_id)
+                ->first();
+            $this->registrationFee = $fee ? $fee->registration_fee : 0;
+        } else {
+            $this->registrationFee = 0;
+        }
     }
 
     public function nextStep()
