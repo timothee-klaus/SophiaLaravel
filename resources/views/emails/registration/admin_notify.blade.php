@@ -44,5 +44,5 @@ Veuillez prendre une décision concernant cette demande en utilisant les options
 L'approbation créera automatiquement le compte sécurisé pour ce secrétaire.
 
 Cordialement,<br>
-**{{ config('app.name') }}**
+**L'équipe Sophia**
 </x-mail::message>

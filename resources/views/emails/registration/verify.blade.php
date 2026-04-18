@@ -12,11 +12,11 @@ Merci de votre intérêt pour rejoindre l'équipe de l'Institut Scolaire Sophia.
 
 <div style="background-color: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 40px 20px; margin: 30px 0; text-align: center;">
     <span style="font-family: 'Courier New', Courier, monospace; font-size: 56px; font-weight: 900; color: #1e3a8a; letter-spacing: 15px; display: block; line-height: 1;">{{ $code }}</span>
-    <p style="color: #94a3b8; font-size: 12px; margin-top: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Code de sécurité à usage unique</p>
+    <p style="color: #94a3b8; font-size: 12px; margin: 15px auto 0 auto; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; text-align: center;">Code de sécurité à usage unique</p>
 </div>
 
 Si vous n'avez pas initié cette demande, vous pouvez ignorer ce message en toute sécurité.
 
 Cordialement,<br>
-**L'équipe {{ config('app.name') }}**
+**L'équipe Sophia**
 </x-mail::message>

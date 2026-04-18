@@ -16,18 +16,26 @@ Route::get('/db-explorer', DatabaseExplorer::class)->name('db-explorer');
 
 Route::get('/approve-registration/{registrationRequest}', function (Request $request, RegistrationRequest $registrationRequest) {
     if (! $request->hasValidSignature()) {
-        abort(403, 'Lien d\'approbation invalide ou expiré.');
+        return view('registration-result', [
+            'status' => 'error',
+            'title' => 'Lien Invalide',
+            'message' => 'Lien d\'approbation invalide ou expiré.'
+        ]);
     }
 
     if ($registrationRequest->status === 'approved') {
-        return "Cette demande a déjà été approuvée.";
+        return view('registration-result', [
+            'status' => 'warning',
+            'title' => 'Déjà Approuvé',
+            'message' => 'Cette demande a déjà été approuvée par la Direction.'
+        ]);
     }
 
     // Create User
     User::create([
         'name' => $registrationRequest->name,
         'email' => $registrationRequest->email,
-        'password' => Hash::make('password'), // Mot de passe par défaut pour le test
+        'password' => Hash::make('password'),
         'role' => 'secretary',
     ]);
 
@@ -36,23 +44,39 @@ Route::get('/approve-registration/{registrationRequest}', function (Request $req
         'approved_at' => now(),
     ]);
 
-    return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
+    return view('registration-result', [
+        'status' => 'success',
+        'title' => 'Approbation Réussie',
+        'message' => "La demande de {$registrationRequest->name} a été approuvée avec succès.\nLe compte secrétaire est actif. Mot de passe par défaut: 'password'."
+    ]);
 })->name('registration.approve');
 
 Route::get('/reject-registration/{registrationRequest}', function (Request $request, RegistrationRequest $registrationRequest) {
     if (! $request->hasValidSignature()) {
-        abort(403, 'Lien de refus invalide ou expiré.');
+        return view('registration-result', [
+            'status' => 'error',
+            'title' => 'Lien Invalide',
+            'message' => 'Lien de refus invalide ou expiré.'
+        ]);
     }
 
     if ($registrationRequest->status !== 'pending' && $registrationRequest->status !== 'verified') {
-        return "Cette demande ne peut plus être rejetée (Statut actuel : " . $registrationRequest->status . ").";
+        return view('registration-result', [
+            'status' => 'warning',
+            'title' => 'Action Impossible',
+            'message' => "Cette demande ne peut plus être rejetée.\nStatut actuel : " . strtoupper($registrationRequest->status)
+        ]);
     }
 
     $registrationRequest->update([
         'status' => 'rejected',
     ]);
 
-    return "La demande de " . $registrationRequest->name . " a été rejetée.";
+    return view('registration-result', [
+        'status' => 'success',
+        'title' => 'Demande Rejetée',
+        'message' => "La demande de {$registrationRequest->name} a été rejetée par la Direction."
+    ]);
 })->name('registration.reject');
 
 Route::get('/', function () {
