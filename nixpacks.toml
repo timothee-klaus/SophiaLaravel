@@ -1,3 +1,6 @@
 [variables]
     NIXPACKS_PHP_EXTENSIONS = 'bcmath, ctype, curl, dom, exif, fileinfo, filter, gd, hash, iconv, intl, mbstring, openssl, pcre, pdo, pdo_mysql, pdo_pgsql, session, tokenizer, xml, zip'
     NIXPACKS_PHP_ROOT = 'public'
+
+[phases.prestart]
+    cmds = ['php artisan migrate --force']
