@@ -36,13 +36,31 @@ class DatabaseExplorer extends Component
     {
         $this->selectedTable = $name;
         $this->columns = Schema::getColumnListing($name);
-        $this->tableData = DB::table($name)->orderByDesc('created_at')->limit(50)->get()->map(function($item) {
-            return (array) $item;
-        })->toArray();
+        $this->loadTableData();
+    }
+
+    public function loadTableData()
+    {
+        $this->tableData = DB::table($this->selectedTable)
+            ->when(Schema::hasColumn($this->selectedTable, 'created_at'), function($q) {
+                return $q->orderByDesc('created_at');
+            })
+            ->limit(50)
+            ->get()
+            ->map(function($item) {
+                return (array) $item;
+            })->toArray();
+    }
+
+    public function deleteRow($id)
+    {
+        DB::table($this->selectedTable)->where('id', $id)->delete();
+        $this->loadTableData();
+        $this->loadTables(); // Refresh counts
     }
 
     public function render()
     {
-        return view('livewire.database-explorer')->layout('components.layouts.guest');
+        return view('livewire.database-explorer')->layout('components.layouts.full');
     }
 }
