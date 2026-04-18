@@ -107,6 +107,28 @@ class PaymentManager extends Component
         try {
             $student = Student::find($this->studentId);
             $activeYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::first();
+
+            // Validate miscellaneous fees cap
+            if ($this->type === 'miscellaneous') {
+                $tuitionFee = TuitionFee::where('level_id', $this->enrollment->level_id)
+                    ->where('academic_year_id', $activeYear->id)->first();
+                
+                if ($tuitionFee) {
+                    $totalPaidMisc = Payment::where('student_id', $this->studentId)
+                        ->where('academic_year_id', $activeYear->id)
+                        ->where('type', 'miscellaneous')
+                        ->sum('amount');
+                    
+                    $remainingMisc = $tuitionFee->miscellaneous_fee - $totalPaidMisc;
+
+                    if ($this->amount > $remainingMisc) {
+                        $maxAllowed = number_format($remainingMisc, 0, ',', ' ');
+                        session()->flash('error', "Le montant dépasse le plafond des frais divers. Maximum autorisé restant : {$maxAllowed} FCFA.");
+                        return;
+                    }
+                }
+            }
+
             $payment = $action->execute(
                 $student,
                 $activeYear->id,

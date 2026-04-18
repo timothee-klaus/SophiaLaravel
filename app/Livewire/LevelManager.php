@@ -284,6 +284,28 @@ class LevelManager extends Component
     public function saveInstallments()
     {
         $fee = TuitionFee::findOrFail($this->managingTuitionFeeId);
+        
+        // Validate dates and amounts
+        foreach ($this->tempInstallments as $index => $inst) {
+            $num = $index + 1;
+            if (empty($inst['due_date'])) {
+                session()->flash('modal_error', "La date de la tranche $num est obligatoire.");
+                return;
+            }
+
+            try {
+                \Carbon\Carbon::parse($inst['due_date']);
+            } catch (\Exception $e) {
+                session()->flash('modal_error', "La date de la tranche $num ({$inst['due_date']}) est invalide.");
+                return;
+            }
+
+            if ($inst['amount'] <= 0) {
+                session()->flash('modal_error', "Le montant de la tranche $num doit être supérieur à 0.");
+                return;
+            }
+        }
+
         $totalInstallments = array_sum(array_column($this->tempInstallments, 'amount'));
 
         if (abs($totalInstallments - $fee->total_amount) > 0.01) {
