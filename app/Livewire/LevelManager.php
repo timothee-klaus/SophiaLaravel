@@ -44,17 +44,29 @@ class LevelManager extends Component
 
     public function loadCycleFees()
     {
+        $cycles = ['preschool', 'primary', 'college', 'lycee'];
+        
+        // Always initialize default values first to avoid "Undefined array key" in Blade
+        foreach ($cycles as $cycle) {
+            $this->cycleFees[$cycle] = [
+                'registration_fee' => 0,
+                'miscellaneous_fee' => 0,
+                'exam_miscellaneous_fee' => 0,
+            ];
+        }
+
         if (!$this->academicYearId) return;
 
-        $cycles = ['preschool', 'primary', 'college', 'lycee'];
         $fees = \App\Models\CycleFee::where('academic_year_id', $this->academicYearId)->get()->keyBy('cycle');
 
         foreach ($cycles as $cycle) {
-            $this->cycleFees[$cycle] = [
-                'registration_fee' => $fees[$cycle]->registration_fee ?? 0,
-                'miscellaneous_fee' => $fees[$cycle]->miscellaneous_fee ?? 0,
-                'exam_miscellaneous_fee' => $fees[$cycle]->exam_miscellaneous_fee ?? 0,
-            ];
+            if (isset($fees[$cycle])) {
+                $this->cycleFees[$cycle] = [
+                    'registration_fee' => $fees[$cycle]->registration_fee ?? 0,
+                    'miscellaneous_fee' => $fees[$cycle]->miscellaneous_fee ?? 0,
+                    'exam_miscellaneous_fee' => $fees[$cycle]->exam_miscellaneous_fee ?? 0,
+                ];
+            }
         }
     }
 
