@@ -3,4 +3,4 @@
     NIXPACKS_PHP_ROOT = 'public'
 
 [phases.prestart]
-    cmds = ['php artisan migrate --force', 'php artisan db:seed --class=InstitutSophiaSeeder --force']
+    cmds = ['php artisan migrate --force']

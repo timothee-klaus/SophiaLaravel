@@ -37,11 +37,6 @@ Route::get('/approve-registration/{request}', function (Request $request, Regist
     return "La demande de " . $registrationRequest->name . " a été approuvée avec succès. Le compte secrétaire a été créé avec le mot de passe par défaut 'password'.";
 })->name('registration.approve');
 
-Route::get('/clear-requests', function () {
-    \App\Models\RegistrationRequest::truncate();
-    return "Toutes les demandes d'inscription ont été supprimées. Vous pouvez maintenant réutiliser votre e-mail.";
-});
-
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
