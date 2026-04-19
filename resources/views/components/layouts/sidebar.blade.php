@@ -80,7 +80,7 @@
             Paramètres
         </a>
 
-        @if(auth()->user()->role === 'admin')
+        @if(auth()->user()->role === 'director')
             <!-- Audit (Admin Only) -->
             <a href="{{ route('audit') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('audit') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
                 <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('audit') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -20,7 +20,7 @@ class AuditExplorer extends Component
 
     public function mount()
     {
-        if (Auth::user()->role !== 'admin') {
+        if (Auth::user()->role !== 'director') {
             return redirect()->route('dashboard');
         }
     }
