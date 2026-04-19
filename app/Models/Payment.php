@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+use App\Traits\Auditable;
+
 class Payment extends Model
 {
+    use Auditable;
     protected $fillable = [
         'student_id',
         'academic_year_id',

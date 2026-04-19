@@ -152,4 +152,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/reports/payments/pdf', [App\Http\Controllers\ReportController::class, 'previewPayments'])->name('reports.payments.pdf');
     Route::get('/reports/balances/pdf', [App\Http\Controllers\ReportController::class, 'previewBalances'])->name('reports.balances.pdf');
+
+    Route::get('/audit', function () {
+        return view('audit');
+    })->name('audit');
 });
