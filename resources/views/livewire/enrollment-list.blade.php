@@ -28,7 +28,7 @@
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="Rechercher (nom, matricule)..." class="pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm w-64 text-slate-700 transition-colors">
             </div>
 
-            <button @click="showModal = true" class="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 transition-all duration-300">
+            <button @click="showModal = true" class="px-5 py-2.5 bg-[#0f172a] text-white rounded-xl font-semibold hover:bg-black hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5 transition-all duration-300">
                 + Nouvelle Inscription
             </button>
         </div>
@@ -55,7 +55,7 @@
             <tbody class="divide-y divide-slate-100">
                 @forelse($enrollments as $enrollment)
                     <tr wire:key="enrollment-{{ $enrollment->id }}" class="hover:bg-slate-50/80 transition-colors duration-150 ease-in-out group">
-                        <td class="px-6 py-4 font-mono text-sm text-slate-500 group-hover:text-blue-600 transition-colors">{{ $enrollment->student->matricule }}</td>
+                        <td class="px-6 py-4 font-mono text-sm text-slate-500 group-hover:text-[#0f172a] transition-colors">{{ $enrollment->student->matricule }}</td>
                         <td class="px-6 py-4 font-bold text-slate-800">
                             {{ mb_strtoupper($enrollment->student->last_name) }} {{ $enrollment->student->first_name }}
                         </td>

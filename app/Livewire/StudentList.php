@@ -26,6 +26,14 @@ class StudentList extends Component
     public $editMatricule;
     public $editGender;
     public $editBirthDate;
+    public $editBirthPlace;
+    public $editNationality;
+    public $editAddress;
+    public $editGuardianName;
+    public $editGuardianPhone;
+    public $editGuardianEmail;
+    public $editGuardianRelation;
+    public $editGuardianProfession;
     public $showEditModal = false;
 
     // Profile state
@@ -33,8 +41,21 @@ class StudentList extends Component
     public $profileStudent = null;
     public $profileActiveEnrollment = null;
     public $profileTuitionFee = 0;
-    public $profileTotalPaid = 0;
-    public $profileBalance = 0;
+    public $profileTuitionPaid = 0;
+    public $profileTuitionBalance = 0;
+    public $profileRegistrationPaid = 0;
+    public $profileMiscellaneousPaid = 0;
+    public $profileRegistrationFee = 0;
+    public $profileMiscellaneousFee = 0;
+
+    public $successMessage = null;
+    public $errorMessage = null;
+
+    public function closeMessage()
+    {
+        $this->successMessage = null;
+        $this->errorMessage = null;
+    }
 
     public function mount()
     {
@@ -62,9 +83,16 @@ class StudentList extends Component
             $tuition = TuitionFee::where('level_id', $this->profileActiveEnrollment->level_id)
                 ->where('academic_year_id', $this->academicYearId)
                 ->first();
-            $this->profileTuitionFee = $tuition ? $tuition->total_amount : 0;
-            $this->profileTotalPaid = $this->profileActiveEnrollment->getTotalPaid();
-            $this->profileBalance = $this->profileTuitionFee - $this->profileTotalPaid;
+            
+            $this->profileTuitionFee = $tuition ? (float)$tuition->total_amount : 0;
+            $this->profileRegistrationFee = $tuition ? (float)$tuition->registration_fee : 0;
+            $this->profileMiscellaneousFee = $tuition ? (float)$tuition->miscellaneous_fee : 0;
+
+            $this->profileTuitionPaid = $this->profileActiveEnrollment->getTuitionPaid();
+            $this->profileRegistrationPaid = $this->profileActiveEnrollment->getRegistrationPaid();
+            $this->profileMiscellaneousPaid = $this->profileActiveEnrollment->getMiscellaneousPaid();
+            
+            $this->profileTuitionBalance = $this->profileTuitionFee - $this->profileTuitionPaid;
         }
 
         $this->showProfileModal = true;
@@ -85,6 +113,14 @@ class StudentList extends Component
         $this->editMatricule = $student->matricule;
         $this->editGender = $student->gender;
         $this->editBirthDate = $student->birth_date ? $student->birth_date->format('Y-m-d') : null;
+        $this->editBirthPlace = $student->birth_place;
+        $this->editNationality = $student->nationality;
+        $this->editAddress = $student->address;
+        $this->editGuardianName = $student->guardian_name;
+        $this->editGuardianPhone = $student->guardian_phone;
+        $this->editGuardianEmail = $student->guardian_email;
+        $this->editGuardianRelation = $student->guardian_relation;
+        $this->editGuardianProfession = $student->guardian_profession;
         $this->showEditModal = true;
     }
 
@@ -96,6 +132,7 @@ class StudentList extends Component
             'editMatricule' => 'required|string|max:255|unique:students,matricule,' . $this->editStudentId,
             'editGender' => 'required|in:M,F',
             'editBirthDate' => 'required|date',
+            'editGuardianEmail' => 'nullable|email',
         ]);
 
         $student = Student::findOrFail($this->editStudentId);
@@ -105,10 +142,18 @@ class StudentList extends Component
             'matricule' => $this->editMatricule,
             'gender' => $this->editGender,
             'birth_date' => $this->editBirthDate,
+            'birth_place' => $this->editBirthPlace,
+            'nationality' => $this->editNationality,
+            'address' => $this->editAddress,
+            'guardian_name' => $this->editGuardianName,
+            'guardian_phone' => $this->editGuardianPhone,
+            'guardian_email' => $this->editGuardianEmail,
+            'guardian_relation' => $this->editGuardianRelation,
+            'guardian_profession' => $this->editGuardianProfession,
         ]);
 
         $this->showEditModal = false;
-        session()->flash('message', 'Élève mis à jour avec succès.');
+        $this->successMessage = 'Élève mis à jour avec succès.';
     }
 
     public function deleteStudent($id)
@@ -118,7 +163,7 @@ class StudentList extends Component
         $student->payments()->delete();
         $student->delete();
 
-        session()->flash('message', 'Élève supprimé avec succès.');
+        $this->successMessage = 'Élève supprimé avec succès.';
     }
 
     public function render()

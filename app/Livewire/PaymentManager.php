@@ -29,6 +29,13 @@ class PaymentManager extends Component
     public $installment_number = '';
     public $paymentSuccess = false;
     public $lastReceiptUrl = null;
+    public $errorMessage = null;
+
+    public function closeMessage()
+    {
+        $this->errorMessage = null;
+        $this->paymentSuccess = false;
+    }
     public function updatedSearch()
     {
         if (strlen($this->search) > 1) {
@@ -123,7 +130,7 @@ class PaymentManager extends Component
 
                     if ($this->amount > $remainingMisc) {
                         $maxAllowed = number_format($remainingMisc, 0, ',', ' ');
-                        session()->flash('error', "Le montant dépasse le plafond des frais divers. Maximum autorisé restant : {$maxAllowed} FCFA.");
+                        $this->errorMessage = "Le montant dépasse le plafond des frais divers. Maximum autorisé restant : {$maxAllowed} FCFA.";
                         return;
                     }
                 }
@@ -156,7 +163,7 @@ class PaymentManager extends Component
             $this->dispatch('paymentCreated');
             
         } catch (Exception $e) {
-            session()->flash('error', $e->getMessage());
+            $this->errorMessage = $e->getMessage();
         }
     }
     public function downloadReceipt($paymentId)

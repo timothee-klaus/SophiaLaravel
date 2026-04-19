@@ -47,13 +47,13 @@
                     </div>
                 @endif
                 <input type="file" wire:model="logo" class="w-full px-4 py-2 mt-1 bg-white border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                <div wire:loading wire:target="logo" class="text-sm text-blue-500">Téléchargement en cours...</div>
+                <div wire:loading wire:target="logo" class="text-sm text-[#0f172a]">Téléchargement en cours...</div>
                 @error('logo') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
         </div>
 
         <div class="mt-6">
-            <button type="submit" class="px-6 py-2 text-white bg-blue-600 rounded">Enregistrer les paramètres</button>
+            <button type="submit" class="px-6 py-2 text-white bg-[#0f172a] rounded hover:bg-black transition-colors">Enregistrer les paramètres</button>
         </div>
     </form>
 </div>

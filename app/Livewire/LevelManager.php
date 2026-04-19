@@ -21,6 +21,15 @@ class LevelManager extends Component
     public $editIsExamClass = false;
     public $editTotalAmount = '';
 
+    public $successMessage = null;
+    public $errorMessage = null;
+
+    public function closeMessage()
+    {
+        $this->successMessage = null;
+        $this->errorMessage = null;
+    }
+
     // Cycle Fees Management
     public $cycleFees = []; // preschool, primary, college, lycee
     public $editingCycleKey = null;
@@ -119,7 +128,7 @@ class LevelManager extends Component
             ]);
 
         $this->editingCycleKey = null;
-        session()->flash('cycle_message_' . $cycle, 'Frais mis à jour pour ce cycle.');
+        $this->successMessage = 'Frais mis à jour pour le cycle ' . $cycle;
     }
 
     public function getLevelsProperty()
@@ -185,7 +194,7 @@ class LevelManager extends Component
         );
 
         $this->cancelEdit();
-        session()->flash('message', 'Classe / Niveau mise à jour avec succès.');
+        $this->successMessage = 'Classe / Niveau mise à jour avec succès.';
     }
 
     public function save()
@@ -193,7 +202,7 @@ class LevelManager extends Component
         if (!$this->academicYearId) {
             $activeYear = AcademicYear::where('is_current', true)->first();
             if (!$activeYear) {
-                session()->flash('error', 'Veuillez définir une année académique active au préalable.');
+                $this->errorMessage = 'Veuillez définir une année académique active au préalable.';
                 return;
             }
             $this->academicYearId = $activeYear->id;
@@ -225,7 +234,7 @@ class LevelManager extends Component
 
         $this->reset(['name', 'cycle', 'is_exam_class', 'total_amount']);
 
-        session()->flash('message', 'Classe / Niveau créé avec succès.');
+        $this->successMessage = 'Classe / Niveau créé avec succès.';
     }
 
     public function manageInstallments($id)
@@ -238,7 +247,7 @@ class LevelManager extends Component
         $fee = $level->tuitionFees->first();
         
         if (!$fee) {
-            session()->flash('error', 'Veuillez d\'abord définir les frais pour cette classe.');
+            $this->errorMessage = 'Veuillez d\'abord définir les frais pour cette classe.';
             return;
         }
 
@@ -285,6 +294,8 @@ class LevelManager extends Component
     {
         $fee = TuitionFee::findOrFail($this->managingTuitionFeeId);
         
+        $activeYear = AcademicYear::find($this->academicYearId);
+        
         // Validate dates and amounts
         foreach ($this->tempInstallments as $index => $inst) {
             $num = $index + 1;
@@ -294,7 +305,13 @@ class LevelManager extends Component
             }
 
             try {
-                \Carbon\Carbon::parse($inst['due_date']);
+                $dueDate = \Carbon\Carbon::parse($inst['due_date']);
+                
+                // Constraint check: must be before or on academic year end date
+                if ($activeYear && $activeYear->end_date && $dueDate->gt(\Carbon\Carbon::parse($activeYear->end_date))) {
+                    session()->flash('modal_error', "La date de la tranche $num ({$inst['due_date']}) ne peut pas dépasser la fin de l'année scolaire (" . \Carbon\Carbon::parse($activeYear->end_date)->format('d/m/Y') . ").");
+                    return;
+                }
             } catch (\Exception $e) {
                 session()->flash('modal_error', "La date de la tranche $num ({$inst['due_date']}) est invalide.");
                 return;
@@ -325,7 +342,7 @@ class LevelManager extends Component
         }
 
         $this->managingTuitionFeeId = null;
-        session()->flash('message', 'Tranches de paiement configurées pour ' . $this->installmentLevelName);
+        $this->successMessage = 'Tranches de paiement configurées pour ' . $this->installmentLevelName;
     }
 
     public function render()

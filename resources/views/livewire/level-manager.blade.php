@@ -100,20 +100,33 @@
         </div>
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 text-sm text-emerald-800 rounded-xl bg-emerald-50/80 border border-emerald-200 backdrop-blur-sm relative z-10" role="alert">
-            {{ session('message') }}
+    @if ($successMessage)
+        <div class="mb-6 p-4 text-sm text-emerald-800 rounded-xl bg-emerald-50/80 border border-emerald-200 backdrop-blur-sm relative z-10 flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300" role="alert">
+            <div class="flex items-center gap-3 font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                {{ $successMessage }}
+            </div>
+            <button wire:click="closeMessage" class="text-emerald-500 hover:text-emerald-700 transition-colors p-1 hover:bg-emerald-100 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
     @endif
-    @if (session()->has('error'))
-        <div class="mb-6 p-4 text-sm text-rose-800 rounded-xl bg-rose-50/80 border border-rose-200 backdrop-blur-sm relative z-10" role="alert">
-            {{ session('error') }}
+
+    @if ($errorMessage)
+        <div class="mb-6 p-4 text-sm text-rose-800 rounded-xl bg-rose-50/80 border border-rose-200 backdrop-blur-sm relative z-10 flex items-center justify-between" role="alert">
+            <div class="flex items-center gap-3 font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                {{ $errorMessage }}
+            </div>
+            <button wire:click="closeMessage" class="text-rose-500 hover:text-rose-700 transition-colors p-1 hover:bg-rose-100 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
     @endif
 
     <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-2xl p-6 mb-8 relative z-10 shadow-sm transition-all hover:shadow-md">
         <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            <span class="w-2 h-2 rounded-full bg-[#0f172a]"></span>
             Création d'une Nouvelle Classe
         </h4>
         <form wire:submit.prevent="save" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
@@ -247,6 +260,7 @@
                                     <div class="w-1.5 h-1.5 rounded-full bg-slate-200 mx-auto"></div>
                                 @endif
                             </td>
+                            @php $fee = $level->tuitionFees->first(); @endphp
                             <td class="px-6 py-4 text-right">
                                 <span class="font-extrabold text-slate-700">{{ number_format($fee->total_amount ?? 0, 0, ',', ' ') }} <span class="text-[10px] text-slate-400 font-medium">F</span></span>
                             </td>
@@ -267,7 +281,7 @@
                                 </div>
                             </td>
                         </tr>
-                        @if($managingTuitionFeeId === $fee->id)
+                        @if($fee && $managingTuitionFeeId === $fee->id)
                             <tr class="bg-blue-50/30">
                                 <td colspan="8" class="px-8 py-8 border-y-2 border-blue-100/50">
                                     <div class="relative">
@@ -324,7 +338,7 @@
 
                                         <div class="flex items-center justify-between border-t border-slate-100 pt-8 mt-10">
                                             <button wire:click="addInstallment" class="inline-flex items-center gap-3 group">
-                                                <span class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-xl font-black transition-all group-hover:bg-blue-600 group-hover:text-white shadow-sm">+</span>
+                                                <span class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-[#0f172a] text-xl font-black transition-all group-hover:bg-[#0f172a] group-hover:text-white shadow-sm">+</span>
                                                 <span class="text-xs font-black text-slate-600 uppercase tracking-widest group-hover:text-blue-600 transition-colors">Nouveau Point de Paiement</span>
                                             </button>
 

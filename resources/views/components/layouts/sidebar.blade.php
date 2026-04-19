@@ -1,6 +1,6 @@
-<aside class="flex flex-col w-72 h-full bg-[#1e3a8a] text-blue-50 shadow-2xl z-20 border-r border-[#152a61] overflow-hidden">
+<aside class="flex flex-col w-72 h-full bg-[#0f172a] text-blue-50 shadow-2xl z-20 border-r border-white/5 overflow-hidden">
     <!-- En-tête / Logo -->
-    <div class="relative flex flex-col items-center justify-center min-h-[5.5rem] border-b border-blue-700/50 text-center px-4 bg-blue-900/20"
+    <div class="relative flex flex-col items-center justify-center min-h-[5.5rem] border-b border-white/5 text-center px-4 bg-black/20"
         @php
             $setting = \App\Models\SchoolSetting::first() ?? (object)[
                 'name' => 'Institut Scolaire Sophia',
@@ -25,7 +25,7 @@
 
         <!-- Dashboard -->
         <a href="{{ route('dashboard') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('dashboard') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('dashboard') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('dashboard') ? 'text-[#1e3a8a]' : 'text-blue-100/50 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
             Dashboard
@@ -33,7 +33,7 @@
 
         <!-- Inscriptions -->
         <a href="{{ route('enrollments.new') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('enrollments.new') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('enrollments.new') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('enrollments.new') ? 'text-[#1e3a8a]' : 'text-blue-100/50 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
             Inscriptions
@@ -41,7 +41,7 @@
 
         <!-- Années Académiques -->
         <a href="{{ route('academic-years') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('academic-years') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('academic-years') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('academic-years') ? 'text-[#1e3a8a]' : 'text-blue-100/50 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
             </svg>
             Années Académiques
@@ -49,18 +49,18 @@
 
         <!-- Élèves -->
         <a href="{{ route('students.index') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('students.*') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('students.*') ? 'text-[#1e3a8a]' : 'text-blue-300 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('students.*') ? 'text-[#1e3a8a]' : 'text-blue-100/50 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
             </svg>
             Élèves
         </a>
 
-        <!-- Éligibilité Examens -->
-        <a href="{{ route('exam-eligibility') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('exam-eligibility') ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-slate-400 hover:text-white hover:bg-slate-800/80' }}">
-            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('exam-eligibility') ? 'text-white' : 'text-slate-500 group-hover:text-blue-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+        <!-- Suivi des Retards -->
+        <a href="{{ route('exam-eligibility') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 text-sm font-medium transition-all duration-300 rounded-xl {{ request()->routeIs('exam-eligibility') ? 'bg-white text-[#1e3a8a] shadow-lg shadow-blue-950/40' : 'text-blue-100 hover:text-white hover:bg-white/10' }}">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:scale-110 {{ request()->routeIs('exam-eligibility') ? 'text-[#1e3a8a]' : 'text-blue-100/50 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            Examens (Liste)
+            Suivi des Retards
         </a>
 
         <!-- Paiements -->
@@ -82,7 +82,7 @@
     </nav>
 
     <!-- Informations Utilisateur -->
-    <div class="px-4 py-4 border-t border-blue-900 bg-blue-900/20">
+    <div class="px-4 py-4 border-t border-white/5 bg-black/20">
         <div class="flex items-center gap-3">
             <div class="flex items-center justify-center w-10 h-10 font-bold text-[#1e3a8a] bg-white rounded-xl shadow-lg ring-2 ring-blue-700">
                 S<!-- Remplacer par $user->initials -->

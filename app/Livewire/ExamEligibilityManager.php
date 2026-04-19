@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\AcademicYear;
 use App\Models\Level;
 use App\Models\Enrollment;
+use App\Models\TuitionFee;
+use App\Models\Payment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\SchoolSetting;
 
@@ -21,12 +23,22 @@ class ExamEligibilityManager extends Component
     public $selectedEnrollmentId = null;
     public $unblockReason = '';
 
+    public $successMessage = null;
+    public $errorMessage = null;
+
+    public function closeMessage()
+    {
+        $this->successMessage = null;
+        $this->errorMessage = null;
+    }
+
     public function mount()
     {
         $activeYear = AcademicYear::where('is_current', true)->first();
         if ($activeYear) {
             $this->activeYearId = $activeYear->id;
             $this->levels = Level::all();
+            $this->loadEnrollments();
         } else {
             $this->levels = collect();
         }
@@ -64,7 +76,7 @@ class ExamEligibilityManager extends Component
                     
                     // "is_up_to_date" = used for "EN RETARD" (All classes)
                     // Up to date means paid at least what was due by "now"
-                    $tuitionFee = TuitionFee::where('level_id', $enrollment->level_id)
+                    $tuitionFee = \App\Models\TuitionFee::where('level_id', $enrollment->level_id)
                         ->where('academic_year_id', $enrollment->academic_year_id)
                         ->first();
                         
@@ -73,7 +85,7 @@ class ExamEligibilityManager extends Component
                             ->where('due_date', '<=', now())
                             ->sum('amount');
                         
-                        $paid = Payment::where('student_id', $enrollment->student_id)
+                        $paid = \App\Models\Payment::where('student_id', $enrollment->student_id)
                             ->where('academic_year_id', $enrollment->academic_year_id)
                             ->where('type', 'tuition')
                             ->sum('amount');
@@ -110,7 +122,7 @@ class ExamEligibilityManager extends Component
                 'manual_exam_unblock_reason' => $this->unblockReason,
             ]);
 
-            session()->flash('message', 'Élève débloqué avec succès.');
+            $this->successMessage = 'Élève débloqué avec succès.';
         }
 
         $this->showUnblockModal = false;

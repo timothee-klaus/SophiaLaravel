@@ -16,6 +16,16 @@ class StudentEnrollment extends Component
     public string $last_name = '';
     public string $birth_date = '';
     public string $gender = '';
+    public string $birth_place = '';
+    public string $nationality = '';
+    public string $address = '';
+
+    // Guardian / Parents info
+    public string $guardian_name = '';
+    public string $guardian_phone = '';
+    public string $guardian_email = '';
+    public string $guardian_relation = '';
+    public string $guardian_profession = '';
 
     // Étape documents
     public $birth_certificate;
@@ -104,6 +114,7 @@ class StudentEnrollment extends Component
                 'last_name' => 'required|string|max:255',
                 'birth_date' => 'required|date',
                 'gender' => 'required|in:M,F',
+                'guardian_email' => 'nullable|email',
                 'birth_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
                 'photo' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
                 'attestation' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -132,6 +143,14 @@ class StudentEnrollment extends Component
             'last_name' => $this->last_name,
             'gender' => $this->gender,
             'birth_date' => $this->birth_date,
+            'birth_place' => $this->birth_place,
+            'nationality' => $this->nationality,
+            'address' => $this->address,
+            'guardian_name' => $this->guardian_name,
+            'guardian_phone' => $this->guardian_phone,
+            'guardian_email' => $this->guardian_email,
+            'guardian_relation' => $this->guardian_relation,
+            'guardian_profession' => $this->guardian_profession,
             'birth_certificate_path' => $birthCertPath,
             'photo_path' => $photoPath,
             'attestation_path' => $attestationPath,

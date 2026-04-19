@@ -97,7 +97,7 @@
         <!-- Recettes du jour -->
         <div class="p-6 bg-white border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300">
             <div class="flex items-center">
-                <div class="flex items-center justify-center w-12 h-12 bg-blue-50 text-blue-600 rounded-xl shadow-inner">
+                <div class="flex items-center justify-center w-12 h-12 bg-slate-100 text-[#0f172a] rounded-xl shadow-inner">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="ml-4">
@@ -193,7 +193,7 @@
     <div class="bg-white border border-slate-200/60 rounded-2xl shadow-sm overflow-hidden mt-6">
         <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
             <h3 class="text-lg font-bold text-slate-800">Activités Récentes</h3>
-            <a href="{{ route('payments') }}" class="px-4 py-2 text-sm font-semibold text-white transition-all bg-gradient-to-tr from-blue-600 to-purple-600 rounded-xl hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5">
+            <a href="{{ route('payments') }}" class="px-4 py-2 text-sm font-semibold text-white transition-all bg-[#0f172a] rounded-xl hover:bg-black hover:shadow-lg hover:shadow-black/20 hover:-translate-y-0.5">
                 + Nouveau Paiement
             </a>
         </div>
@@ -253,7 +253,7 @@
             </table>
         </div>
         <div class="px-6 py-4 text-center border-t border-slate-100 bg-slate-50/50">
-            <a href="{{ route('payments') }}" class="text-sm font-bold text-blue-600 hover:text-blue-700 hover:underline transition-colors">Tout afficher l'historique &rarr;</a>
+            <a href="{{ route('payments') }}" class="text-sm font-bold text-[#0f172a] hover:text-black hover:underline transition-colors">Tout afficher l'historique &rarr;</a>
         </div>
     </div>
 

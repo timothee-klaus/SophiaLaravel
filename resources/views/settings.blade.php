@@ -2,14 +2,18 @@
     <div class="px-4 py-8 mx-auto xl:max-w-7xl">
         <div class="mb-8">
             <h2 class="text-3xl font-extrabold leading-tight text-slate-800 flex items-center gap-3">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                Paramètres de l'Établissement
+                <div class="w-10 h-10 rounded-xl bg-[#0f172a] flex items-center justify-center text-white shadow-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                Mon Profil & Sécurité
             </h2>
-            <p class="mt-1 text-sm text-gray-500">Gérez les informations officielles et le logo.</p>
+            <p class="mt-1 text-sm text-slate-500 font-medium">Gérez vos informations personnelles et la sécurité de votre compte.</p>
         </div>
 
-        <div>
-            @livewire('school-settings-manager')
+        <div class="space-y-10">
+            @livewire('user-profile-manager')
+            @livewire('user-password-manager')
+            @livewire('system-settings-manager')
         </div>
     </div>
 </x-layouts.app>

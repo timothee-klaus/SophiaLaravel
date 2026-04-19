@@ -93,10 +93,10 @@
             </p>
 
             <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 mb-10 w-full text-left">
-                <h4 class="text-xs font-black uppercase tracking-wider text-blue-600 mb-3">Prochaines étapes</h4>
+                <h4 class="text-xs font-black uppercase tracking-wider text-[#0f172a] mb-3">Prochaines étapes</h4>
                 <ul class="space-y-3 text-[13px] font-medium text-slate-600">
                     <li class="flex gap-3">
-                        <span class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] shrink-0">1</span>
+                        <span class="w-5 h-5 rounded-full bg-[#0f172a] text-white flex items-center justify-center text-[10px] shrink-0">1</span>
                         Notification envoyée au directeur.
                     </li>
                     <li class="flex gap-3">

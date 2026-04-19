@@ -44,9 +44,27 @@
         </div>
     </div>
 
-    @if (session()->has('message'))
-        <div class="mb-6 p-4 text-sm text-emerald-800 rounded-xl bg-emerald-50/80 border border-emerald-200 backdrop-blur-sm relative z-10" role="alert">
-            {{ session('message') }}
+    @if ($successMessage)
+        <div class="mb-6 p-4 text-sm text-emerald-800 rounded-xl bg-emerald-50/80 border border-emerald-200 backdrop-blur-sm relative z-10 flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300" role="alert">
+            <div class="flex items-center gap-3 font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                {{ $successMessage }}
+            </div>
+            <button wire:click="closeMessage" class="text-emerald-500 hover:text-emerald-700 transition-colors p-1 hover:bg-emerald-100 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    @endif
+
+    @if ($errorMessage)
+        <div class="mb-6 p-4 text-sm text-rose-800 rounded-xl bg-rose-50/80 border border-rose-200 backdrop-blur-sm relative z-10 flex items-center justify-between" role="alert">
+            <div class="flex items-center gap-3 font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                {{ $errorMessage }}
+            </div>
+            <button wire:click="closeMessage" class="text-rose-500 hover:text-rose-700 transition-colors p-1 hover:bg-rose-100 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
     @endif
 
@@ -152,24 +170,61 @@
                             @error('editFirstName') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <div class="mb-5">
-                        <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Matricule</label>
-                        <input type="text" wire:model="editMatricule" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors text-slate-800 font-mono">
-                        @error('editMatricule') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="grid grid-cols-2 gap-5 mb-8">
+                    <div class="grid grid-cols-2 gap-5 mb-5">
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Date de naissance</label>
-                            <input type="date" wire:model="editBirthDate" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors text-slate-800">
-                            @error('editBirthDate') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Matricule <span class="text-rose-500">*</span></label>
+                            <input type="text" wire:model="editMatricule" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-[#1e3a8a] focus:ring-[#1e3a8a]/20 focus:ring-2 sm:text-sm transition-all text-slate-800 font-mono">
+                            @error('editMatricule') <span class="text-rose-500 text-xs mt-1 font-medium">{{ $message }}</span> @enderror
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Sexe</label>
-                            <select wire:model="editGender" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors text-slate-800 font-medium">
-                                <option value="M">Masculin</option>
-                                <option value="F">Féminin</option>
-                            </select>
-                            @error('editGender') <span class="text-rose-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Nationalité</label>
+                            <input type="text" wire:model="editNationality" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-[#1e3a8a] focus:ring-[#1e3a8a]/20 focus:ring-2 sm:text-sm transition-all text-slate-800" placeholder="Ex: Togolaise">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Lieu de naissance</label>
+                            <input type="text" wire:model="editBirthPlace" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-[#1e3a8a] focus:ring-[#1e3a8a]/20 focus:ring-2 sm:text-sm transition-all text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Adresse / Quartier</label>
+                            <input type="text" wire:model="editAddress" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 focus:border-[#1e3a8a] focus:ring-[#1e3a8a]/20 focus:ring-2 sm:text-sm transition-all text-slate-800">
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 mb-5">
+                        <h4 class="text-[10px] font-black uppercase text-[#1e3a8a] mb-5 tracking-[0.2em] flex items-center gap-2">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            Informations Tuteur / Parent
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Nom Complet <span class="text-rose-500">*</span></label>
+                                <input type="text" wire:model="editGuardianName" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#1e3a8a]/10 focus:border-[#1e3a8a]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Relation <span class="text-rose-500">*</span></label>
+                                <select wire:model="editGuardianRelation" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#1e3a8a]/10 focus:border-[#1e3a8a]">
+                                    <option value="">Choisir...</option>
+                                    <option value="Père">Père</option>
+                                    <option value="Mère">Mère</option>
+                                    <option value="Tuteur">Tuteur</option>
+                                    <option value="Autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Profession</label>
+                                <input type="text" wire:model="editGuardianProfession" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#1e3a8a]/10 focus:border-[#1e3a8a]">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Téléphone <span class="text-rose-500">*</span></label>
+                                <input type="text" wire:model="editGuardianPhone" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#1e3a8a]/10 focus:border-[#1e3a8a]">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Email</label>
+                            <input type="email" wire:model="editGuardianEmail" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-xs focus:ring-2 focus:ring-[#1e3a8a]/10 focus:border-[#1e3a8a]">
                         </div>
                     </div>
                     <div class="flex justify-end gap-3 pt-5 border-t border-slate-100">
@@ -195,7 +250,7 @@
                     <div>
                         <h2 class="text-2xl font-extrabold tracking-tight">{{ mb_strtoupper($profileStudent->last_name) }} {{ $profileStudent->first_name }}</h2>
                         <div class="flex items-center gap-3 mt-1 text-slate-400 text-sm font-medium">
-                            <span class="flex items-center gap-1.5 text-blue-300"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg> {{ $profileStudent->matricule }}</span>
+                            <span class="flex items-center gap-1.5 text-slate-100"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg> {{ $profileStudent->matricule }}</span>
                             <span class="flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> {{ \Carbon\Carbon::parse($profileStudent->birth_date)->age }} ans</span>
                         </div>
                     </div>
@@ -212,7 +267,7 @@
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Année en cours</h4>
                     <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm mb-8 flex justify-between items-center group">
                         <div class="flex gap-4 items-center">
-                            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <div class="w-12 h-12 rounded-xl bg-slate-100 text-[#0f172a] flex items-center justify-center shrink-0">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                             </div>
                             <div>
@@ -220,26 +275,118 @@
                                 <p class="text-sm font-medium text-emerald-600 flex items-center gap-1.5 mt-0.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Inscrit / Actif</p>
                             </div>
                         </div>
-                        <button wire:click="" class="opacity-0 group-hover:opacity-100 transition-opacity bg-blue-50 text-blue-700 px-4 py-2 font-bold text-sm rounded-xl hover:bg-blue-100 flex items-center gap-2">
+                        <button wire:click="" class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-100 text-[#0f172a] px-4 py-2 font-bold text-sm rounded-xl hover:bg-[#0f172a] hover:text-white flex items-center gap-2 border border-slate-200">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                             Certificat Scolaire
                         </button>
                     </div>
 
                     <!-- Situation Financière -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Situation Financière</h4>
-                    <div class="grid grid-cols-3 gap-4 mb-8">
-                        <div class="bg-white border text-center border-slate-200 rounded-2xl p-5 shadow-sm">
-                            <p class="text-xs font-bold text-slate-500 uppercase">Scolarité Totale</p>
-                            <p class="text-xl font-extrabold text-slate-800 mt-2 font-mono">{{ number_format($profileTuitionFee, 0, ',', ' ') }}</p>
+                    <h4 class="text-xs font-black text-[#0f172a] uppercase tracking-[0.2em] mb-4">Scolarité (Uniquement)</h4>
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-50 border text-center border-slate-200 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Montant Fixé</p>
+                            <p class="text-lg font-black text-slate-800 mt-1 font-mono">{{ number_format($profileTuitionFee, 0, ',', ' ') }}</p>
                         </div>
-                        <div class="bg-white border text-center border-emerald-200 rounded-2xl p-5 shadow-sm">
-                            <p class="text-xs font-bold text-emerald-600 uppercase">Total Payé</p>
-                            <p class="text-xl font-extrabold text-emerald-700 mt-2 font-mono">{{ number_format($profileTotalPaid, 0, ',', ' ') }}</p>
+                        <div class="bg-white border text-center border-[#0f172a]/20 rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-black text-[#0f172a] uppercase tracking-widest">Total Payé</p>
+                            <p class="text-lg font-black text-[#0f172a] mt-1 font-mono">{{ number_format($profileTuitionPaid, 0, ',', ' ') }}</p>
                         </div>
-                        <div class="bg-white border text-center {{ $profileBalance > 0 ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200' }} rounded-2xl p-5 shadow-sm">
-                            <p class="text-xs font-bold {{ $profileBalance > 0 ? 'text-amber-600' : 'text-slate-500' }} uppercase">Reste à payer</p>
-                            <p class="text-xl font-extrabold {{ $profileBalance > 0 ? 'text-amber-700' : 'text-slate-800' }} mt-2 font-mono">{{ number_format($profileBalance, 0, ',', ' ') }}</p>
+                        <div class="bg-white border text-center {{ $profileTuitionBalance > 0 ? 'border-amber-200 bg-amber-50/20' : 'border-slate-200' }} rounded-2xl p-4 shadow-sm">
+                            <p class="text-[10px] font-black {{ $profileTuitionBalance > 0 ? 'text-amber-600' : 'text-slate-400' }} uppercase tracking-widest">Reste à payer</p>
+                            <p class="text-lg font-black {{ $profileTuitionBalance > 0 ? 'text-amber-700' : 'text-slate-800' }} mt-1 font-mono">{{ number_format($profileTuitionBalance, 0, ',', ' ') }}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-10">
+                        <div class="relative">
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex justify-between items-center transition-all hover:border-blue-300">
+                                <div class="flex flex-col">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Inscription</p>
+                                    <p class="text-sm font-black text-slate-800 font-mono">{{ number_format($profileRegistrationPaid, 0, ',', ' ') }} / {{ number_format($profileRegistrationFee, 0, ',', ' ') }}</p>
+                                </div>
+                                <div>
+                                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight {{ $profileRegistrationPaid >= $profileRegistrationFee ? 'bg-emerald-100 text-emerald-700' : 'bg-[#0f172a]/10 text-[#0f172a]' }}">
+                                        {{ $profileRegistrationPaid >= $profileRegistrationFee ? 'RÉGLÉ' : 'À PAYER' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex justify-between items-center transition-all hover:border-purple-300">
+                                <div class="flex flex-col">
+                                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Frais Divers</p>
+                                    <p class="text-sm font-black text-slate-800 font-mono">{{ number_format($profileMiscellaneousPaid, 0, ',', ' ') }} / {{ number_format($profileMiscellaneousFee, 0, ',', ' ') }}</p>
+                                </div>
+                                <div>
+                                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-tight {{ $profileMiscellaneousPaid >= $profileMiscellaneousFee ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700' }}">
+                                        {{ $profileMiscellaneousPaid >= $profileMiscellaneousFee ? 'RÉGLÉ' : 'À PAYER' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informations Personnelles Enriches -->
+                    <h4 class="text-xs font-black text-[#0f172a] uppercase tracking-[0.2em] mb-4">Informations Personnelles</h4>
+                    <div class="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm mb-10 ring-1 ring-slate-100/50">
+                        <div class="grid grid-cols-2 gap-y-7 gap-x-10">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Nationalité</p>
+                                <p class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#0f172a]"></span>
+                                    {{ $profileStudent->nationality ?? 'Non définie' }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Lieu de Naissance</p>
+                                <p class="text-sm font-bold text-slate-700">{{ $profileStudent->birth_place ?? 'Non défini' }}</p>
+                            </div>
+                            <div class="col-span-2">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 opacity-70">Adresse de Résidence</p>
+                                <p class="text-sm font-bold text-slate-700 leading-relaxed">{{ $profileStudent->address ?? 'Non définie' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dossier Parents -->
+                    <h4 class="text-xs font-black text-[#1e3a8a] uppercase tracking-[0.2em] mb-4">Responsable Légal</h4>
+                    <div class="bg-gradient-to-br from-[#1e3a8a] to-[#152c6e] rounded-3xl p-8 text-white shadow-2xl shadow-blue-900/40 mb-10 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-48 h-48 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+                        <div class="absolute left-0 bottom-0 w-32 h-32 bg-blue-400/10 rounded-full -ml-16 -mb-16 blur-2xl"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-5 mb-8">
+                                <div class="w-14 h-14 bg-white/15 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-xl">
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-blue-200/80 uppercase tracking-[0.3em] leading-none mb-1.5">TUTEUR RÉFÉRENT</p>
+                                    <p class="text-xl font-black">{{ $profileStudent->guardian_name ?? 'Non renseigné' }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-x-8 gap-y-6 pt-6 border-t border-white/10">
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-bold text-blue-200/60 uppercase tracking-widest">Relation</p>
+                                    <p class="text-sm font-black">{{ $profileStudent->guardian_relation ?? 'N/A' }}</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-bold text-blue-200/60 uppercase tracking-widest">Profession</p>
+                                    <p class="text-sm font-black italic">{{ $profileStudent->guardian_profession ?? 'Non renseignée' }}</p>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-bold text-blue-200/60 uppercase tracking-widest">Téléphone</p>
+                                    <a href="tel:{{ $profileStudent->guardian_phone }}" class="text-sm font-black flex items-center gap-2 hover:text-blue-200 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                        {{ $profileStudent->guardian_phone ?? 'N/A' }}
+                                    </a>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-[10px] font-bold text-blue-200/60 uppercase tracking-widest">Email</p>
+                                    <p class="text-sm font-black truncate">{{ $profileStudent->guardian_email ?? 'N/A' }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @else

@@ -32,8 +32,33 @@ class Enrollment extends Model
         return $this->belongsTo(AcademicYear::class);
     }
 
+    public function getTuitionPaid(): float
+    {
+        return (float) Payment::where('student_id', $this->student_id)
+            ->where('academic_year_id', $this->academic_year_id)
+            ->where('type', 'tuition')
+            ->sum('amount');
+    }
+
+    public function getRegistrationPaid(): float
+    {
+        return (float) Payment::where('student_id', $this->student_id)
+            ->where('academic_year_id', $this->academic_year_id)
+            ->where('type', 'registration')
+            ->sum('amount');
+    }
+
+    public function getMiscellaneousPaid(): float
+    {
+        return (float) Payment::where('student_id', $this->student_id)
+            ->where('academic_year_id', $this->academic_year_id)
+            ->where('type', 'miscellaneous')
+            ->sum('amount');
+    }
+
     public function getTotalPaid(): float
     {
+        // Combined for total cash collected (original meaning, but we should be careful in UI)
         return (float) Payment::where('student_id', $this->student_id)
             ->where('academic_year_id', $this->academic_year_id)
             ->sum('amount');

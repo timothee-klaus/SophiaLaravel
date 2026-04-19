@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-wrap gap-2 md:gap-3">
             @if($activeTab === 'payments')
-                <a href="{{ route('reports.payments.pdf', ['action' => 'stream', 'start' => $startDate, 'end' => $endDate, 'level' => $paymentLevelId, 'year' => $paymentAcademicYearId]) }}" target="_blank" class="flex items-center gap-2 bg-blue-600 text-white px-4 md:px-5 py-2 rounded-xl font-bold hover:bg-blue-700 hover:-translate-y-0.5 transition-all shadow-sm text-sm md:text-base">
+                <a href="{{ route('reports.payments.pdf', ['action' => 'stream', 'start' => $startDate, 'end' => $endDate, 'level' => $paymentLevelId, 'year' => $paymentAcademicYearId]) }}" target="_blank" class="flex items-center gap-2 bg-[#0f172a] text-white px-4 md:px-5 py-2 rounded-xl font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-sm text-sm md:text-base">
                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Aperçu PDF
                 </a>
@@ -20,7 +20,7 @@
                     Export Excel
                 </button>
             @else
-                <a href="{{ route('reports.balances.pdf', ['action' => 'stream', 'level' => $balanceLevelId, 'year' => $balanceAcademicYearId]) }}" target="_blank" class="flex items-center gap-2 bg-blue-600 text-white px-4 md:px-5 py-2 rounded-xl font-bold hover:bg-blue-700 hover:-translate-y-0.5 transition-all shadow-sm text-sm md:text-base">
+                <a href="{{ route('reports.balances.pdf', ['action' => 'stream', 'level' => $balanceLevelId, 'year' => $balanceAcademicYearId]) }}" target="_blank" class="flex items-center gap-2 bg-[#0f172a] text-white px-4 md:px-5 py-2 rounded-xl font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-sm text-sm md:text-base">
                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                     Aperçu PDF
                 </a>

@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="bg-blue-100 text-[#1e3a8a] px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm border border-blue-200">
+                <div class="bg-slate-100 text-[#0f172a] px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm border border-slate-200">
                     {{ count($tables) }} Tables actives
                 </div>
                 <a href="/" class="text-slate-400 hover:text-slate-600 font-bold text-sm transition-colors decoration-none">Retour au site →</a>

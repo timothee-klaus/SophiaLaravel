@@ -30,12 +30,12 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nom de famille</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nom de famille <span class="text-rose-500">*</span></label>
                         <input type="text" wire:model="last_name" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all" placeholder="Dupont">
                         @error('last_name') <span class="text-rose-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Prénom(s)</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Prénom(s) <span class="text-rose-500">*</span></label>
                         <input type="text" wire:model="first_name" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all" placeholder="Jean">
                         @error('first_name') <span class="text-rose-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                     </div>
@@ -43,18 +43,71 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Date de Naissance</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Date de Naissance <span class="text-rose-500">*</span></label>
                         <input type="date" wire:model="birth_date" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all">
                         @error('birth_date') <span class="text-rose-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Sexe</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Sexe <span class="text-rose-500">*</span></label>
                         <select wire:model="gender" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all">
                             <option value="">Sélectionner</option>
                             <option value="M">Masculin</option>
                             <option value="F">Féminin</option>
                         </select>
                         @error('gender') <span class="text-rose-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Lieu de Naissance</label>
+                        <input type="text" wire:model="birth_place" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all" placeholder="Ex: Lomé">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nationalité</label>
+                        <input type="text" wire:model="nationality" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all" placeholder="Ex: Togolaise">
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Adresse / Quartier de Résidence</label>
+                    <input type="text" wire:model="address" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all" placeholder="Ex: Adidogomé, Lomé">
+                </div>
+
+                <!-- Guardian Info Section -->
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="text-xs font-black text-[#1e3a8a] uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        Responsable Légal / Tuteur
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Nom Complet <span class="text-rose-500">*</span></label>
+                            <input type="text" wire:model="guardian_name" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all bg-white" placeholder="Nom et Prénoms">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Lien de parenté <span class="text-rose-500">*</span></label>
+                            <select wire:model="guardian_relation" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all bg-white">
+                                <option value="">Choisir...</option>
+                                <option value="Père">Père</option>
+                                <option value="Mère">Mère</option>
+                                <option value="Tuteur">Tuteur</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Profession du Tuteur</label>
+                            <input type="text" wire:model="guardian_profession" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all bg-white" placeholder="Ex: Enseignant, Commerçant...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Téléphone <span class="text-rose-500">*</span></label>
+                            <input type="text" wire:model="guardian_phone" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all bg-white" placeholder="+228 90 00 00 00">
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wide">Email</label>
+                        <input type="email" wire:model="guardian_email" class="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1e3a8a]/20 focus:border-[#1e3a8a] transition-all bg-white" placeholder="tuteur@email.com">
                     </div>
                 </div>
 
@@ -87,7 +140,7 @@
                 
                 <!-- NEW: Academic Year selector -->
                 <div class="mb-4">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Année Académique</label>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Année Académique <span class="text-rose-500 font-bold">*</span></label>
                     <select wire:model.live="academic_year_id" class="block w-full md:w-1/2 border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm font-medium transition-all">
                         <option value="">Sélectionnez l'année de rattachement</option>
                         @foreach($academicYears as $year)
@@ -99,7 +152,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Cycle Scolaire</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Cycle Scolaire <span class="text-rose-500 font-bold">*</span></label>
                         <select wire:model.live="cycle" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all">
                             <option value="">Sélectionnez un cycle</option>
                             <option value="preschool">Préscolaire</option>
@@ -110,7 +163,7 @@
                         @error('cycle') <span class="text-rose-500 text-xs font-medium mt-1 block">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Classe / Niveau</label>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Classe / Niveau <span class="text-rose-500 font-bold">*</span></label>
                         <select wire:model="level_id" class="block w-full border border-slate-300 bg-slate-50 px-4 py-2.5 rounded-xl text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 sm:text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed" {{ empty($availableLevels) ? 'disabled' : '' }}>
                             <option value="">Sélectionnez une classe</option>
                             @foreach($availableLevels as $lvl)
@@ -207,7 +260,7 @@
             @endif
             
             @if($step < 4)
-                <button wire:click="nextStep" type="button" class="px-5 py-2.5 shadow-sm text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors ml-auto">
+                <button wire:click="nextStep" type="button" class="px-5 py-2.5 shadow-sm text-sm font-bold rounded-xl text-white bg-[#1e3a8a] hover:bg-[#152c6e] focus:outline-none transition-all hover:scale-105">
                     Continuer &rarr;
                 </button>
             @else

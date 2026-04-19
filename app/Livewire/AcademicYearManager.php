@@ -8,6 +8,8 @@ use App\Models\AcademicYear;
 class AcademicYearManager extends Component
 {
     public $name;
+    public $start_date;
+    public $end_date;
     public $academicYears;
 
     public function mount()
@@ -24,17 +26,36 @@ class AcademicYearManager extends Component
     {
         $this->validate([
             'name' => 'required|string|unique:academic_years,name',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
         ]);
 
         AcademicYear::create([
             'name' => $this->name,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'is_current' => false,
             'is_closed' => false,
         ]);
 
-        $this->name = '';
+        $this->reset(['name', 'start_date', 'end_date']);
         $this->loadYears();
         session()->flash('message', 'Année académique créée.');
+    }
+
+    public function deleteYear($id)
+    {
+        $year = AcademicYear::findOrFail($id);
+        
+        // Safety check: can't delete if it has enrollments
+        if (\App\Models\Enrollment::where('academic_year_id', $id)->exists()) {
+            session()->flash('error', "Impossible de supprimer l'année {$year->name} car elle contient des inscriptions.");
+            return;
+        }
+
+        $year->delete();
+        $this->loadYears();
+        session()->flash('message', "L'année {$year->name} a été supprimée.");
     }
 
     public function setActive($id)

@@ -60,10 +60,15 @@
                 @endif
             </div>
 
-            @if (session()->has('error'))
-                <div class="p-4 mb-4 text-xs font-bold text-red-700 bg-red-100 border border-red-200 rounded-xl flex items-center gap-2">
-                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    {{ session('error') }}
+            @if ($errorMessage)
+                <div class="p-4 mb-4 text-sm font-bold text-rose-800 bg-rose-50/80 border border-rose-200 backdrop-blur-sm rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300" role="alert">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {{ $errorMessage }}
+                    </div>
+                    <button wire:click="closeMessage" class="text-rose-500 hover:text-rose-700 transition-colors p-1 hover:bg-rose-100 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
             @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
