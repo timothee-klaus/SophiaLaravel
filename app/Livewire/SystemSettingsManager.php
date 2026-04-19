@@ -12,22 +12,38 @@ class SystemSettingsManager extends Component
     public string $successMessage = '';
     public string $errorMessage = '';
 
+    public function mount()
+    {
+        $this->maintenanceMode = app()->isDownForMaintenance();
+    }
+
     public function toggleMaintenance()
     {
-        // Mocking maintenance mode toggle
-        $this->maintenanceMode = !$this->maintenanceMode;
-        $this->successMessage = $this->maintenanceMode 
-            ? 'Plateforme passée en mode maintenance.' 
-            : 'Plateforme en ligne et accessible.';
+        try {
+            if ($this->maintenanceMode) {
+                Artisan::call('up');
+                $this->maintenanceMode = false;
+                $this->successMessage = 'Plateforme en ligne et accessible.';
+            } else {
+                // We use a secret to allow the admin to still access the site if needed
+                // In a production environment, this secret should be more secure/random
+                Artisan::call('down', [
+                    '--secret' => 'sophia-admin-access'
+                ]);
+                $this->maintenanceMode = true;
+                $this->successMessage = 'Plateforme passée en mode maintenance. Bypass: /sophia-admin-access';
+            }
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Erreur maintenance : ' . $e->getMessage();
+        }
     }
 
     public function clearCache()
     {
         try {
-            Artisan::call('cache:clear');
-            Artisan::call('view:clear');
-            Artisan::call('config:clear');
-            $this->successMessage = 'Cache du système vidé avec succès.';
+            // optimized clear
+            Artisan::call('optimize:clear');
+            $this->successMessage = 'Cache du système vidé avec succès (Configuration, Routes, Views, Cache).';
         } catch (\Exception $e) {
             $this->errorMessage = 'Erreur lors du vidage du cache : ' . $e->getMessage();
         }
@@ -35,8 +51,36 @@ class SystemSettingsManager extends Component
 
     public function exportDatabase()
     {
-        // Mocking export for demo
-        $this->successMessage = 'Sauvegarde de la base de données générée avec succès. Le fichier sera prêt dans un instant.';
+        try {
+            $dbName = config('database.connections.pgsql.database');
+            $dbUser = config('database.connections.pgsql.username');
+            $dbPass = config('database.connections.pgsql.password');
+            $dbHost = config('database.connections.pgsql.host');
+            
+            $filename = 'sophia_backup_' . date('Y-m-d_H-i-s') . '.sql';
+            $path = storage_path('app/' . $filename);
+            
+            // Set PG password for the command
+            putenv("PGPASSWORD=$dbPass");
+            
+            $command = "pg_dump -h $dbHost -U $dbUser $dbName > $path";
+            
+            exec($command, $output, $returnVar);
+            
+            // Clean up env variable
+            putenv("PGPASSWORD");
+
+            if ($returnVar !== 0) {
+                throw new \Exception("pg_dump failed with exit code $returnVar");
+            }
+
+            $this->successMessage = 'Exportation terminée. Le téléchargement va démarrer.';
+            
+            return response()->download($path)->deleteFileAfterSend(true);
+            
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Erreur d\'exportation : ' . $e->getMessage();
+        }
     }
 
     public function render()
