@@ -21,8 +21,12 @@ class UserProfileManager extends Component
         $user = auth()->user();
         $this->name = $user->name;
         $this->email = $user->email;
-        // In a real app, these would come from user settings table or JSON column
-        $this->language = 'fr';
+        $this->language = $user->settings['language'] ?? 'fr';
+        $this->notifications = $user->settings['notifications'] ?? [
+            'email_alerts' => true,
+            'browser_notifications' => false,
+            'payment_reports' => true,
+        ];
     }
 
     public function updateProfile()
@@ -35,6 +39,10 @@ class UserProfileManager extends Component
         auth()->user()->update([
             'name' => $this->name,
             'email' => $this->email,
+            'settings' => [
+                'language' => $this->language,
+                'notifications' => $this->notifications,
+            ]
         ]);
 
         $this->successMessage = 'Profil et préférences mis à jour.';
