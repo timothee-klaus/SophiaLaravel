@@ -125,6 +125,12 @@ class StudentEnrollment extends Component
                 'cycle' => 'required|in:preschool,primary,college,lycee',
                 'level_id' => 'required|exists:levels,id',
             ]);
+
+            // Block enrollment if registration fee is not configured (zero)
+            if (!$this->registrationFee || $this->registrationFee <= 0) {
+                $this->addError('level_id', 'Les frais d\'inscription pour cette classe ne sont pas configurés. Veuillez les définir dans "Classes & Niveaux" avant de procéder.');
+                return;
+            }
         }
         $this->step++;
     }

@@ -65,6 +65,16 @@ class ReenrollmentManager extends Component
             return;
         }
 
+        // Block re-enrollment if registration fee is zero
+        $fee = TuitionFee::where('level_id', $this->selectedLevelId)
+            ->where('academic_year_id', $this->activeYear->id)
+            ->first();
+
+        if (!$fee || $fee->registration_fee <= 0) {
+            session()->flash('error', 'Les frais d\'inscription pour cette classe ne sont pas configurés. Veuillez les définir dans "Classes & Niveaux" avant de procéder.');
+            return;
+        }
+
         Enrollment::create([
             'student_id' => $this->selectedStudentId,
             'academic_year_id' => $this->activeYear->id,
