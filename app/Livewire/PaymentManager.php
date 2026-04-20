@@ -115,23 +115,38 @@ class PaymentManager extends Component
             $student = Student::find($this->studentId);
             $activeYear = AcademicYear::where('is_current', true)->first() ?? AcademicYear::first();
 
-            // Validate miscellaneous fees cap
-            if ($this->type === 'miscellaneous') {
-                $tuitionFee = TuitionFee::where('level_id', $this->enrollment->level_id)
-                    ->where('academic_year_id', $activeYear->id)->first();
-                
-                if ($tuitionFee) {
-                    $totalPaidMisc = Payment::where('student_id', $this->studentId)
-                        ->where('academic_year_id', $activeYear->id)
-                        ->where('type', 'miscellaneous')
-                        ->sum('amount');
-                    
-                    $remainingMisc = $tuitionFee->miscellaneous_fee - $totalPaidMisc;
+            // Block duplicate registration or miscellaneous payments in the same year
+            if (in_array($this->type, ['registration', 'miscellaneous'])) {
+                $alreadyPaid = Payment::where('student_id', $this->studentId)
+                    ->where('academic_year_id', $activeYear->id)
+                    ->where('type', $this->type)
+                    ->sum('amount');
 
-                    if ($this->amount > $remainingMisc) {
-                        $maxAllowed = number_format($remainingMisc, 0, ',', ' ');
-                        $this->errorMessage = "Le montant dépasse le plafond des frais divers. Maximum autorisé restant : {$maxAllowed} FCFA.";
-                        return;
+                $label = $this->type === 'registration' ? "d'inscription" : "divers";
+
+                if ($this->type === 'registration' && $alreadyPaid > 0) {
+                    $this->errorMessage = "Les frais d'inscription ont déjà été réglés pour cette année scolaire.";
+                    return;
+                }
+
+                // For miscellaneous: check against the fee cap
+                if ($this->type === 'miscellaneous') {
+                    $tuitionFee = TuitionFee::where('level_id', $this->enrollment->level_id)
+                        ->where('academic_year_id', $activeYear->id)->first();
+
+                    if ($tuitionFee) {
+                        $remainingMisc = $tuitionFee->miscellaneous_fee - $alreadyPaid;
+
+                        if ($remainingMisc <= 0) {
+                            $this->errorMessage = "Les frais divers ont déjà été intégralement réglés pour cette année scolaire.";
+                            return;
+                        }
+
+                        if ($this->amount > $remainingMisc) {
+                            $maxAllowed = number_format($remainingMisc, 0, ',', ' ');
+                            $this->errorMessage = "Le montant dépasse le plafond des frais divers. Maximum autorisé restant : {$maxAllowed} FCFA.";
+                            return;
+                        }
                     }
                 }
             }
