@@ -39,10 +39,11 @@ class PaymentManager extends Component
     public function updatedSearch()
     {
         if (strlen($this->search) > 1) {
-            $this->students = Student::where('first_name', 'like', '%' . $this->search . '%')
-                ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                ->orWhere('matricule', 'like', '%' . $this->search . '%')
-                ->take(5)->get();
+            $searchTerm = '%' . trim($this->search) . '%';
+            $this->students = Student::where('matricule', 'like', $searchTerm)
+                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$searchTerm])
+                ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", [$searchTerm])
+                ->take(10)->get();
         } else {
             $this->students = [];
         }

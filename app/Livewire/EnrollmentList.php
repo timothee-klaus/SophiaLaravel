@@ -66,9 +66,12 @@ class EnrollmentList extends Component
                 $query->where('level_id', $this->filterLevelId);
             })
             ->whereHas('student', function ($query) {
-                $query->where('first_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('matricule', 'like', '%' . $this->search . '%');
+                if ($this->search) {
+                    $searchTerm = '%' . trim($this->search) . '%';
+                    $query->where('matricule', 'like', $searchTerm)
+                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$searchTerm])
+                          ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", [$searchTerm]);
+                }
             })
             ->orderBy('id', 'desc')
             ->paginate(15);

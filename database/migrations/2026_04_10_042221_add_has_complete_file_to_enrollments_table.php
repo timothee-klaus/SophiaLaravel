@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('enrollments', function (Blueprint $table) {
-            //
+            $table->boolean('has_complete_file')->default(false);
         });
     }
 

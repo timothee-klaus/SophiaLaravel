@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('school_settings', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->default('INSTITUT SCOLAIRE SOPHIA');
+            $table->string('slogan')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phones')->nullable();
+            $table->string('email')->nullable();
+            $table->string('logo_path')->nullable();
             $table->timestamps();
         });
     }

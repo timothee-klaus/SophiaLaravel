@@ -27,20 +27,31 @@
     </div>
     @if($studentId && $enrollment)
         <div class="p-6">
+            <!-- Informations de l'élève -->
+            <div class="mb-6 flex items-center justify-between bg-white border border-blue-100 rounded-2xl p-4 shadow-sm shadow-blue-50">
+                <div class="flex items-center gap-4">
+                    <div class="h-14 w-14 rounded-xl bg-[#1e3a8a]/10 flex items-center justify-center text-[#1e3a8a] font-bold text-xl uppercase">
+                        {{ substr($enrollment->student->first_name, 0, 1) }}{{ substr($enrollment->student->last_name, 0, 1) }}
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">{{ $enrollment->student->first_name }} <span class="uppercase">{{ $enrollment->student->last_name }}</span></h3>
+                        <div class="flex items-center gap-3 mt-1">
+                            <span class="text-sm text-gray-500 font-medium">Matricule : <span class="text-gray-700">{{ $enrollment->student->matricule }}</span></span>
+                            <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                            <span class="text-sm text-gray-500 font-medium">Statut : <span class="text-emerald-600 font-bold">Inscrit</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="inline-flex items-center gap-2 py-2 px-4 rounded-xl text-sm font-bold bg-[#1e3a8a]/5 text-[#1e3a8a] border border-[#1e3a8a]/10">
+                        <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        Classe : {{ $enrollment->level->name ?? 'N/A' }}
+                    </span>
+                </div>
             </div>
             <!-- Alerts & Context -->
             <div class="mb-6 space-y-3">
-                @if($isNewStudent)
-                    <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3 animate-pulse">
-                        <div class="p-2 bg-amber-500 text-white rounded-lg shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-[11px] font-black text-amber-800 uppercase tracking-wider">Nouvel Élève Détecté</p>
-                            <p class="text-[10px] font-bold text-amber-600">RAPPEL : Les frais divers sont payables intégralement à l'inscription.</p>
-                        </div>
-                    </div>
-                @endif
+
 
                 @if($examBlocked)
                     <div class="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between shadow-sm">
@@ -71,49 +82,113 @@
                     </button>
                 </div>
             @endif
+
+            @if ($paymentSuccess)
+                <div class="p-4 mb-4 text-sm font-bold text-emerald-800 bg-emerald-50/80 border border-emerald-200 backdrop-blur-sm rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300" role="alert">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span>Paiement enregistré avec succès. 
+                        @if($lastReceiptUrl)
+                            <a href="{{ route('payments.receipt-download', $lastReceiptUrl) }}" class="underline font-black hover:text-emerald-900 ml-1">Télécharger le reçu</a>
+                        @endif
+                        </span>
+                    </div>
+                    <button wire:click="closeMessage" class="text-emerald-500 hover:text-emerald-700 transition-colors p-1 hover:bg-emerald-100 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Echéancier -->
-                <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 font-semibold text-gray-700">Échéancier Scolarité</div>
-                    <table class="w-full text-sm text-left">
-                        <thead class="text-xs text-gray-500 uppercase bg-gray-50">
-                            <tr>
-                                <th class="px-4 py-2">Tranche</th>
-                                <th class="px-4 py-2">Montant</th>
-                                <th class="px-4 py-2">Date Limite</th>
-                                <th class="px-4 py-2">Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($installments as $ins)
+                <div class="flex flex-col gap-6">
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 font-semibold text-gray-700">Échéancier Scolarité</div>
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-500 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2">Tranche</th>
+                                    <th class="px-4 py-2">Montant</th>
+                                    <th class="px-4 py-2">Date Limite</th>
+                                    <th class="px-4 py-2">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($installments as $ins)
+                                    @php
+                                        $paid = $payments->where('type', 'tuition')->where('installment_number', $ins->installment_number)->sum('amount');
+                                        $isPaid = $paid >= $ins->amount;
+                                        $due = Carbon\Carbon::parse($ins->due_date);
+                                        $isLate = !$isPaid && now()->greaterThan($due);
+                                        $dateStr = "";
+                                        if($ins->installment_number == 1) $dateStr = "Fin Octobre";
+                                        elseif($ins->installment_number == 2) $dateStr = "Fin Décembre";
+                                        elseif($ins->installment_number == 3) $dateStr = "Fin Février";
+                                        elseif($ins->installment_number == 4) $dateStr = "15 Avril";
+                                    @endphp
+                                    <tr class="border-b border-gray-100">
+                                        <td class="px-4 py-3 font-medium">T{{ $ins->installment_number }}</td>
+                                        <td class="px-4 py-3">{{ number_format($ins->amount, 0, ',', ' ') }} F</td>
+                                        <td class="px-4 py-3">
+                                            <span class="{{ $isLate ? 'text-red-600 font-bold' : 'text-gray-500' }}">{{ $dateStr }}</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            @if($isPaid)
+                                                <span class="text-green-600 font-bold text-xs uppercase">Payé</span>
+                                            @else
+                                                <span class="text-orange-500 font-bold text-xs uppercase">{{ number_format($ins->amount - $paid, 0, ',', ' ') }} F</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Frais d'inscription et Divers -->
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 font-semibold text-gray-700">Frais d'Inscription et Divers</div>
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-500 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2">Type</th>
+                                    <th class="px-4 py-2">Montant</th>
+                                    <th class="px-4 py-2">Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 @php
-                                    $paid = $payments->where('type', 'tuition')->where('installment_number', $ins->installment_number)->sum('amount');
-                                    $isPaid = $paid >= $ins->amount;
-                                    $due = Carbon\Carbon::parse($ins->due_date);
-                                    $isLate = !$isPaid && now()->greaterThan($due);
-                                    $dateStr = "";
-                                    if($ins->installment_number == 1) $dateStr = "Fin Octobre";
-                                    elseif($ins->installment_number == 2) $dateStr = "Fin Décembre";
-                                    elseif($ins->installment_number == 3) $dateStr = "Fin Février";
-                                    elseif($ins->installment_number == 4) $dateStr = "15 Avril";
+                                    $regFeeAmount = $tuitionFee ? $tuitionFee->registration_fee : 0;
+                                    $miscFeeAmount = $tuitionFee ? $tuitionFee->miscellaneous_fee : 0;
+                                    $regPaidAmount = $payments->where('type', 'registration')->sum('amount');
+                                    $miscPaidAmount = $payments->where('type', 'miscellaneous')->sum('amount');
+                                    $isRegPaid = $regPaidAmount >= $regFeeAmount;
+                                    $isMiscPaid = $miscPaidAmount >= $miscFeeAmount;
                                 @endphp
                                 <tr class="border-b border-gray-100">
-                                    <td class="px-4 py-3 font-medium">T{{ $ins->installment_number }}</td>
-                                    <td class="px-4 py-3">{{ number_format($ins->amount, 0, ',', ' ') }} F</td>
+                                    <td class="px-4 py-3 font-medium">Inscription</td>
+                                    <td class="px-4 py-3">{{ number_format($regFeeAmount, 0, ',', ' ') }} F</td>
                                     <td class="px-4 py-3">
-                                        <span class="{{ $isLate ? 'text-red-600 font-bold' : 'text-gray-500' }}">{{ $dateStr }}</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        @if($isPaid)
+                                        @if($isRegPaid)
                                             <span class="text-green-600 font-bold text-xs uppercase">Payé</span>
                                         @else
-                                            <span class="text-orange-500 font-bold text-xs uppercase">{{ number_format($ins->amount - $paid, 0, ',', ' ') }} F</span>
+                                            <span class="text-orange-500 font-bold text-xs uppercase">Reste: {{ number_format($regFeeAmount - $regPaidAmount, 0, ',', ' ') }} F</span>
                                         @endif
                                     </td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-4 py-3 font-medium">Frais Divers</td>
+                                    <td class="px-4 py-3">{{ number_format($miscFeeAmount, 0, ',', ' ') }} F</td>
+                                    <td class="px-4 py-3">
+                                        @if($isMiscPaid)
+                                            <span class="text-green-600 font-bold text-xs uppercase">Payé</span>
+                                        @else
+                                            <span class="text-orange-500 font-bold text-xs uppercase">Reste: {{ number_format($miscFeeAmount - $miscPaidAmount, 0, ',', ' ') }} F</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- Formulaire Paiement -->
                 <div class="border border-gray-200 rounded-lg p-5">
@@ -152,37 +227,12 @@
                             @endif
                         </div>
                         <div class="pt-2">
-                        @if($paymentSuccess && $lastReceiptUrl)
-                            <div class="mt-8 p-8 bg-emerald-50 rounded-2xl border border-emerald-100 text-center animate-in fade-in zoom-in duration-300">
-                                <div class="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-200">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                </div>
-                                <h3 class="text-xl font-bold text-emerald-900 mb-1">Paiement Validé !</h3>
-                                <p class="text-sm text-emerald-700 mb-8 font-medium italic opacity-80">« Le Don De Dieu » vous remercie.</p>
-                                
-                                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <a href="{{ route('payments.receipt-preview', $lastReceiptUrl) }}" target="_blank" class="px-6 py-3 bg-white text-[#1e3a8a] font-bold rounded-xl border-2 border-blue-100 hover:bg-blue-50 transition flex items-center justify-center gap-2 shadow-sm">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                        Voir l'Aperçu
-                                    </a>
-                                    <a href="{{ route('payments.receipt-download', $lastReceiptUrl) }}" class="px-6 py-3 bg-[#1e3a8a] text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 hover:bg-blue-800 transition flex items-center justify-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                        Télécharger le Reçu
-                                    </a>
-                                </div>
-                                
-                                <button type="button" wire:click="$set('paymentSuccess', false)" class="mt-8 text-xs font-bold text-emerald-600 hover:text-emerald-800 underline uppercase tracking-widest">
-                                    Enregistrer un autre paiement
-                                </button>
-                            </div>
-                        @else
                             <div class="mt-6">
                                 <button type="submit" class="w-full bg-[#1e3a8a] text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-blue-900/20 hover:bg-blue-800 transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     Confirmer et Enregistrer le Paiement
                                 </button>
                             </div>
-                        @endif
                     </form>
                 </div>
             </div>

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained()->restrictOnDelete();
             $table->foreignId('academic_year_id')->constrained()->restrictOnDelete();
             $table->decimal('amount', 10, 2);
-            $table->enum('type', ['registration', 'miscellaneous', 'tuition'])->index();
+            $table->enum('type', ['registration', 'miscellaneous', 'tuition', 'exam'])->index();
             $table->integer('installment_number')->nullable();
             $table->string('transaction_id')->nullable()->unique();
             $table->timestamps();

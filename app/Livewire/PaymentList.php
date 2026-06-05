@@ -105,11 +105,16 @@ class PaymentList extends Component
             ->when($this->filterType, function ($query) {
                 $query->where('type', $this->filterType);
             })
-            ->whereHas('student', function ($query) {
-                $query->where('first_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                      ->orWhere('matricule', 'like', '%' . $this->search . '%')
-                      ->orWhere('transaction_id', 'like', '%' . $this->search . '%');
+            ->where(function ($query) {
+                if ($this->search) {
+                    $searchTerm = '%' . trim($this->search) . '%';
+                    $query->where('transaction_id', 'like', $searchTerm)
+                          ->orWhereHas('student', function ($q) use ($searchTerm) {
+                              $q->where('matricule', 'like', $searchTerm)
+                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", [$searchTerm])
+                                ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", [$searchTerm]);
+                          });
+                }
             })
             ->orderBy('id', 'desc')
             ->paginate(15);
