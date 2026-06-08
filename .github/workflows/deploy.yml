@@ -1,0 +1,42 @@
+name: Deploy to AWS EC2
+
+# Le script se lance uniquement quand on push sur la branche main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Connexion SSH et Déploiement
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          # Les commandes que le robot va taper sur ton serveur
+          script: |
+            cd /var/www/SophiaLaravel
+            
+            # 1. Récupérer le nouveau code
+            git pull origin main
+            
+            # 2. Mettre à jour les dépendances PHP
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            
+            # 3. Mettre à jour et compiler le Frontend (Vite)
+            npm ci
+            npm run build
+            
+            # 4. Lancer les nouvelles migrations s'il y en a
+            php artisan migrate --force
+            
+            # 5. Nettoyer les caches pour appliquer les changements
+            php artisan optimize:clear
+            
+            # 6. Sécuriser les droits des dossiers pour Nginx
+            sudo chgrp -R www-data storage bootstrap/cache
+            sudo chmod -R ug+rwx storage bootstrap/cache
